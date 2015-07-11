@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+
+  "name": "__MSG_application_title__",
+  "description": "__MSG_application_description__",
+  "version": "0.2",
+  "default_locale": "en",
+
+  "browser_action": {
+    "default_icon": "icon128.png",
+    "default_popup": "popup.html",
+    "default_title": "__MSG_application_title__ by BitTubes"
+  },
+  "permissions": [
+    "activeTab",
+    "https://ajax.googleapis.com/"
+  ]
+}
