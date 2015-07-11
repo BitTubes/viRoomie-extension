@@ -1,0 +1,10 @@
+{
+  "application_title": {
+    "message": "viRoomie",
+    "description": "The title of the application, displayed in the web store."
+  },
+  "application_description": {
+    "message": "Open viRooms directly from your supported video website like YouTube and share the viRoom you are in with friends.",
+    "description": "The description of the application, displayed in the web store."
+  }
+}
