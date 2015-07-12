@@ -6,10 +6,10 @@
   "version": "0.3",
   "default_locale": "en",
   "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png",
-    "256": "icon256.png"
+    "16": "img/icon16.png",
+    "48": "img/icon48.png",
+    "128": "img/icon128.png",
+    "256": "img/icon256.png"
   },
 
   "background": {
@@ -19,7 +19,10 @@
     "persistent": false
   },
   "page_action" : {
-    "default_icon" : "icon19.png",
+    "default_icon" : {
+      "19":"img/icon19.png",
+      "38":"img/icon38.png"
+    },
     "default_popup": "popup.html",
     "default_title" : "__MSG_application_title__"
   },
