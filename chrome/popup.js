@@ -15,7 +15,7 @@ function makeScreenshot() {
 
 
 function sendMail() {
-  chrome.tabs.executeScript(null, {file: "mail_content_script.js"});
+  chrome.tabs.executeScript(null, {file: "email_content_script.js"});
 }
 
 function openViRoomie(url) {
