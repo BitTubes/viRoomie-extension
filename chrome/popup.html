@@ -1,0 +1,48 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+  <head>
+    <title>Getting Started Extension's Popup</title>
+    <style>
+      body {
+        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+        font-size: 100%;
+      }
+      body > div {
+        display:none;
+      }
+      button {
+        /* avoid an excessively wide status text */
+        white-space: pre;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        width: 100%;
+        display: block;
+        margin-bottom: 5px;
+      }
+    </style>
+
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+     -->
+    <script src="popup.js"></script>
+  </head>
+  <body>
+<!--     <span id="msg"></span> -->
+    <div id="app">
+      <button id="screenshot">Take Screenshot</button>
+      <button id="email">Email Invite</button>
+    </div>
+    <div id="external">
+      <button id="openapp">Open Video in viRoomie</button>
+    </div>
+<!--     <button id="options">Options</button> -->
+  </body>
+</html>
