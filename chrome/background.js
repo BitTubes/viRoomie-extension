@@ -55,6 +55,16 @@ function createSetIconAction(path, callback) {
   image.src = chrome.runtime.getURL(path);
 }
 
+// function setPageActionTitle() {
+//   chrome.tabs.query(queryInfo, function(tabs) {
+//     var currentTab = tabs[0];
+//     chrome.pageAction.setTitle({
+//       tabId: currentTab.id,
+//       title: chrome.i18n.getMessage("application_title")
+//     });
+//   });
+// }
+
 
 // When the extension is installed or upgraded ...
 chrome.runtime.onInstalled.addListener(function() {
@@ -82,8 +92,8 @@ chrome.runtime.onInstalled.addListener(function() {
             // That fires when a page's URL contains a 'chrome' ...
             new chrome.declarativeContent.PageStateMatcher({
               pageUrl: { 
-                hostEquals: 'www.youtube.com',
-                pathEquals: '/watch'
+                hostEquals: 'www.youtube.com'//,
+                // pathPrefix: '/watch'
               },
             })
           ],
@@ -106,6 +116,7 @@ chrome.runtime.onInstalled.addListener(function() {
         {
           conditions: [
             // That fires when a page's URL contains a 'chrome' ...
+            // setPageActionTitle(),
             new chrome.declarativeContent.PageStateMatcher({
               pageUrl: { hostEquals: 'app.viroomie.com' },
             })

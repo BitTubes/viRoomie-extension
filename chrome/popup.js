@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // };
   getCurrentTabUrl(function(url) {
     processUrl(url, function(url) { // inside viRoomie
+
       // document.getElementById('msg').innerHTML = "app:"+url;
       document.getElementById('app').style.display = "block";
 
@@ -83,14 +84,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }, function(url) { // external website
       
+      if(url.indexOf("youtube.com/watch")>0 || url.indexOf("//nlv.bittubes.com")>=0) {
+        openViRoomie(url);
+      }
 
-      openViRoomie(url);
 
-
-      // document.getElementById('msg').innerHTML = "external:"+url;
+      document.getElementById('msg').innerHTML = chrome.i18n.getMessage("open_video_error");
       document.getElementById('external').style.display = "block";
 
-      document.getElementById('openapp').onclick = openViRoomie.bind(null,url);
+      // document.getElementById('openapp').onclick = openViRoomie.bind(null,url);
     });
   });
 });

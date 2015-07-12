@@ -4,5 +4,11 @@
   },
   "application_description": {
     "message": "Öffne viRooms direkt von unterstützten Video Websites wie YouTube und teile deinen viRoom mit Freunden."
+  },
+  "open_in": {
+    "message": "In viRoomie öffnen"
+  },
+  "open_video_error": {
+    "message": "Bitte ein Video wählen und dann hier erneut klicken"
   }
 }
