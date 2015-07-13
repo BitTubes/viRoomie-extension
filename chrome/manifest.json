@@ -3,7 +3,7 @@
 
   "name": "__MSG_application_title__",
   "description": "__MSG_application_description__",
-  "version": "0.3",
+  "version": "0.4",
   "default_locale": "en",
   "icons": {
     "16": "img/icon16.png",
@@ -27,18 +27,18 @@
     "default_title" : "__MSG_application_title__"
   },
 
-  "options_ui": {
-    // Required.
-    "page": "options.html",
-    // Recommended.
-    "chrome_style": true
-    // Not recommended; only provided for backwards compatibility,
-    // and will be unsupported in a future version of Chrome (TBD).
-    //"open_in_tab": true
-  },  
+  // "options_ui": {
+  //   // Required.
+  //   "page": "options.html",
+  //   // Recommended.
+  //   "chrome_style": true
+  //   // Not recommended; only provided for backwards compatibility,
+  //   // and will be unsupported in a future version of Chrome (TBD).
+  //   //"open_in_tab": true
+  // },  
   "permissions" : [
     "activeTab",
-    "https://ajax.googleapis.com/",
+    // "https://ajax.googleapis.com/",
 
     "declarativeContent"
   ]
