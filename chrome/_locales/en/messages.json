@@ -7,8 +7,25 @@
     "message": "Open viRooms directly from your supported video website like YouTube and share the viRoom you are in with friends.",
     "description": "The description of the application, displayed in the web store."
   },
-  "open_in": {
-    "message": "Open in viRoomie"
+  "searching_rooms": {
+    "message": "searching for open viRooms..."
+  },
+  "open_new": {
+    "message": "Open in new viRoom"
+  },
+  "open_in_existing": {
+    "message": "Open in #$room$",
+    "placeholders": {
+      "room": {
+        "content": "$1"
+      }
+    }
+  },
+  "or": {
+    "message": "or"
+  },
+  "404": {
+    "message": "No viRoomie sessions found - open a new one"
   },
   "open_video_error": {
     "message": "Please select a video and then click here again."

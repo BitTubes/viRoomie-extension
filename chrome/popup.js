@@ -1,28 +1,136 @@
 /* jshint strict:false */
 
-var screen_id = 100;
 
 
-function makeScreenshot() {
-  chrome.tabs.captureVisibleTab(function(screenshotUrl) {
-    var viewTabUrl = chrome.extension.getURL('screenshot.html?id=' + screen_id++);
-    // var targetId = null;
-    window.localStorage.setItem("screenshotUrl",screenshotUrl);
+//  +++++++++++++++ GOOGLE ANALYTICS ++++++++++++
 
-    chrome.tabs.create({url: viewTabUrl});
-  });
-}
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-65099990-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
 
 
-function sendMail() {
-  chrome.tabs.executeScript(null, {file: "email_content_script.js"});
-}
+
+//  +++++++++++++++ Screenshot ++++++++++++
+
+// var screen_id = 100;
+// function makeScreenshot() {
+//   chrome.tabs.captureVisibleTab(function(screenshotUrl) {
+//     var viewTabUrl = chrome.extension.getURL('screenshot.html?id=' + screen_id++);
+//     // var targetId = null;
+//     window.localStorage.setItem("screenshotUrl",screenshotUrl);
+
+//     chrome.tabs.create({url: viewTabUrl});
+//   });
+// }
+
+
+
+// //  +++++++++++++++ EMAIL INVITE ++++++++++++
+
+// function sendMail() {
+//   chrome.tabs.executeScript(null, {file: "email_content_script.js"});
+// }
+
+
+
+//  +++++++++++++++ OPEN VIDEO ++++++++++++
 
 function openViRoomie(url) {
   chrome.tabs.create( {url: "http://app.viroomie.com#video="+(url.split("=").join("%3D").split("&").join("%26"))} );
 }
 
+function updateViroom(url, tabId, windowId) {
+  // chrome.tabs.executeScript(tabId, {file: "load_video_content_script.js"});
+  chrome.tabs.sendMessage(tabId, {"a":"url", "url":url}, function(data) {
+    console.log("response from content-script: ",data);
+    chrome.tabs.update(tabId, { // make tab active in its window
+      active:true
+    }, function() {
+      if (chrome.runtime.lastError) {
+          console.log(chrome.runtime.lastError.message);
+          var button = document.getElementById("tabId"+tabId);
+          button.parentNode.removeChild(button);
+      } else {
+        chrome.windows.update(windowId, { // make tab's window active
+          drawAttention:true, // blink
+          focused:true // bring window to front
+        }, function() {});
+        window.close();
+      }
+    });
+  });
+}
 
+function addElement(url, room, tabId, windowId) { 
+  // create a new div element 
+  // and give it some content 
+  var newButton = document.createElement("button"); 
+  var newContent = document.createTextNode(chrome.i18n.getMessage("open_in_existing", [room]));
+  // newButton.setAttribute("data-room", room);
+  newButton.setAttribute("id", "tabId"+tabId);
+  newButton.onclick = updateViroom.bind(null,url, tabId, windowId);
+  newButton.appendChild(newContent); //add the text node to the newly created div. 
+
+  document.getElementById("updateapps").appendChild(newButton);
+}
+function findViRoomieTabs(url) {
+  var buttonWrapper = document.getElementById('updateapps');
+  buttonWrapper.setAttribute("data-msg", chrome.i18n.getMessage("searching_rooms"));
+
+  var queryInfo = {
+    status: "complete",
+    url: "http://app.viroomie.com/*"
+  };
+  var room,
+    hashvars,
+    hashvar,
+    roomCounter = 0,
+    tab;
+  chrome.tabs.query(queryInfo, function(tabs) {
+    buttonWrapper.removeAttribute("data-msg");
+    urls = "";
+    for(var el in tabs) {
+      tab = tabs[el];
+      roomCounter++;
+      if(tab.url.indexOf("#")>=0) {
+        room = false;
+        hashvars = tab.url.split("#")[1].split("&");
+        for (var i = hashvars.length - 1; i >= 0; i--) {
+          hashvar = hashvars[i].split("=");
+          if(hashvar[0] == "room") {
+            room = hashvar[1];
+            break;
+          }
+        }
+        if(room) {
+          addElement(url, room, tab.id, tab.windowId);
+          // urls += "<br>"+tabs[el].url;
+        }
+      }
+    }
+    // document.getElementById('msg').innerHTML = urls;
+    if(roomCounter) {
+      buttonWrapper.setAttribute("data-or", chrome.i18n.getMessage("or"));
+    } else {
+      buttonWrapper.setAttribute("data-msg", chrome.i18n.getMessage("404")); // TODO
+    }
+  });
+
+}
+// function updateViRoomie(url) {
+//   chrome.tabs.sendMessage(integer tabId, any message, object options, function responseCallback);
+// }
+
+
+
+//  +++++++++++++++ UTIL ++++++++++++
+var currentTabId = null;
 function getCurrentTabUrl(callback) {
   // Query filter to be passed to chrome.tabs.query - see
   // https://developer.chrome.com/extensions/tabs#method-query
@@ -38,7 +146,7 @@ function getCurrentTabUrl(callback) {
     // A window can only have one active tab at a time, so the array consists of
     // exactly one tab.
     var currentTab = tabs[0];
-
+    currentTabId = currentTab.id;
     // A tab is a plain object that provides information about the tab.
     // See https://developer.chrome.com/extensions/tabs#type-Tab
     var url = currentTab.url;
@@ -51,9 +159,11 @@ function getCurrentTabUrl(callback) {
 
     callback(url);
   });
+  // chrome.tabs.getCurrent(function(currentTab){
+  //   callback(currentTab.url);
+  // });
   // Most methods of the Chrome extension APIs are asynchronous!
 }
-
 function processUrl(url, viroomieCallback, externalCallback) {
   if(url.indexOf("//app.viroomie.com")>0) {
     viroomieCallback(url);
@@ -74,25 +184,25 @@ document.addEventListener('DOMContentLoaded', function() {
   //   }
   // };
   getCurrentTabUrl(function(url) {
-    processUrl(url, function(url) { // inside viRoomie
+    processUrl(url, function() { // inside viRoomie
 
       // document.getElementById('msg').innerHTML = "app:"+url;
-      document.getElementById('app').style.display = "block";
+      // document.getElementById('app').style.display = "block";
 
-      document.getElementById('screenshot').onclick = makeScreenshot;
-      document.getElementById('email').onclick = sendMail;
+      // document.getElementById('screenshot').onclick = makeScreenshot;
+      // document.getElementById('email').onclick = sendMail;
 
     }, function(url) { // external website
       
       if(url.indexOf("youtube.com/watch")>0 || url.indexOf("//nlv.bittubes.com")>=0) {
-        openViRoomie(url);
+        // openViRoomie(url);
+        document.getElementById('openapp').innerHTML = chrome.i18n.getMessage("open_new");
+        findViRoomieTabs(url);
+      } else {
+        document.getElementById('msg').innerHTML = chrome.i18n.getMessage("open_video_error");
       }
-
-
-      document.getElementById('msg').innerHTML = chrome.i18n.getMessage("open_video_error");
       document.getElementById('external').style.display = "block";
-
-      // document.getElementById('openapp').onclick = openViRoomie.bind(null,url);
+      document.getElementById('openapp').onclick = openViRoomie.bind(null,url);
     });
   });
 });

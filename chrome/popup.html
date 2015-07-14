@@ -6,26 +6,55 @@
  -->
 <html>
   <head>
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Poiret+One' rel='stylesheet'>
     <title>Getting Started Extension's Popup</title>
     <style>
       body {
-        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+        background-color: #000;
+        color: #fff;
+        font-family: 'Source Sans Pro',sans-serif;
         font-size: 100%;
       }
       body > div {
         display:none;
       }
+      #msg {
+        width: 200px;
+      }
+      #updateapps {
+        border-top: 1px solid #fff;
+        margin-top: 15px;
+        padding-top: 15px;
+        position: relative;
+      }
+      #updateapps[data-msg]::before {
+        content: attr(data-msg);
+      }
+      #updateapps[data-or]::before {
+        content: attr(data-or);
+        position: absolute;
+        top: 2px;
+        left: 50%;
+        background-color: #000;
+        font-size: 13px;
+        width: 3em;
+        text-align: center;
+        margin: -1em 0 0 -1.5em;
+      }
       button {
-        /* avoid an excessively wide status text */
         white-space: pre;
         text-overflow: ellipsis;
         overflow: hidden;
         width: 100%;
         display: block;
-        margin-bottom: 5px;
+        padding: 0.5em;
+        color: #fff;
+        background-color: #000;
+        border: 0;
+        cursor: pointer;
       }
-      #msg {
-        width: 200px;
+      button:hover {
+        font-weight: bold;
       }
     </style>
 
@@ -39,12 +68,14 @@
   </head>
   <body>
     <div id="app">
-      <button id="screenshot">Take Screenshot</button>
-      <button id="email">Email Invite</button>
+<!--       <button id="screenshot">Take Screenshot</button>
+      <button id="email">Email Invite</button> -->
     </div>
     <div id="external">
       <div id="msg"></div>
-      <!-- <button id="openapp">Open Video in viRoomie</button> -->
+      <button id="openapp"></button>
+      <div id="updateapps">
+      </div>
     </div>
 <!--     <button id="options">Options</button> -->
   </body>
