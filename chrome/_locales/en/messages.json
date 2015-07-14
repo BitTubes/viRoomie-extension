@@ -24,9 +24,6 @@
   "or": {
     "message": "or"
   },
-  "404": {
-    "message": "No viRoomie sessions found - open a new one"
-  },
   "open_video_error": {
     "message": "Please select a video and then click here again."
   }
