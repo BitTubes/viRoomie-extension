@@ -97,7 +97,6 @@ function findViRoomieTabs(url) {
     urls = "";
     for(var el in tabs) {
       tab = tabs[el];
-      roomCounter++;
       if(tab.url.indexOf("#")>=0) {
         room = false;
         hashvars = tab.url.split("#")[1].split("&");
@@ -109,6 +108,7 @@ function findViRoomieTabs(url) {
           }
         }
         if(room) {
+          roomCounter++;
           addElement(url, room, tab.id, tab.windowId);
           // urls += "<br>"+tabs[el].url;
         }
@@ -118,7 +118,7 @@ function findViRoomieTabs(url) {
     if(roomCounter) {
       buttonWrapper.setAttribute("data-or", chrome.i18n.getMessage("or"));
     } else {
-      buttonWrapper.setAttribute("data-msg", chrome.i18n.getMessage("404")); // TODO
+      buttonWrapper.style.display = "none";
     }
   });
 
@@ -200,6 +200,8 @@ document.addEventListener('DOMContentLoaded', function() {
         findViRoomieTabs(url);
       } else {
         document.getElementById('msg').innerHTML = chrome.i18n.getMessage("open_video_error");
+        document.getElementById('updateapps').style.display = "none";
+        document.getElementById('openapp').style.display = "none";
       }
       document.getElementById('external').style.display = "block";
       document.getElementById('openapp').onclick = openViRoomie.bind(null,url);
