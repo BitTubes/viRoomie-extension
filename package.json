@@ -1,0 +1,26 @@
+{
+  "name": "viroomie-extension",
+  "version": "1.0.0",
+  "description": "--",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BitTubes/viRoomie-extension.git"
+  },
+  "author": "BitTubes GmbH",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/BitTubes/viRoomie-extension/issues"
+  },
+  "homepage": "https://github.com/BitTubes/viRoomie-extension#readme",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-concurrent": "^2.0.0",
+    "grunt-contrib-compress": "^0.13.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-shell": "^1.1.2"
+  }
+}

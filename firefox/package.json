@@ -1,0 +1,22 @@
+{
+  "title": "viRoomie",
+  "name": "viroomie-firefox",
+  "version": "0.0.1",
+  "description": "Open viRooms directly from your supported video website like YouTube and share the viRoom you are in with friends.",
+  "main": "index.js",
+  "scripts": {
+    "start": "jpm run",
+    "debug": "jpm run --debug",
+    "watch": "jpm watchpost --post-url http://localhost:8888/",
+    "update": "jpm post --post-url http://localhost:8888/",
+    "deploy": "jpm xpi"
+  },
+  "author": "BitTubes GmbH",
+  "engines": {
+    "firefox": ">=38.0a1",
+    "fennec": ">=38.0a1"
+  },
+  "license": "LGPL-3.0",
+  "devDependencies": {
+  }
+}
