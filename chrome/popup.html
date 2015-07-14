@@ -20,6 +20,7 @@
       }
       #msg {
         width: 200px;
+        text-align: center;
       }
       #updateapps {
         border-top: 1px solid #fff;
@@ -29,6 +30,9 @@
       }
       #updateapps[data-msg]::before {
         content: attr(data-msg);
+        position: relative;
+        display: block;
+        text-align: center;
       }
       #updateapps[data-or]::before {
         content: attr(data-or);
@@ -36,12 +40,13 @@
         top: 2px;
         left: 50%;
         background-color: #000;
-        font-size: 13px;
+        font-size: 85%;
         width: 3em;
         text-align: center;
         margin: -1em 0 0 -1.5em;
       }
       button {
+        font-size: 100%;
         white-space: pre;
         text-overflow: ellipsis;
         overflow: hidden;
@@ -56,6 +61,7 @@
       button:hover {
         font-weight: bold;
       }
+
     </style>
 
     <!--
