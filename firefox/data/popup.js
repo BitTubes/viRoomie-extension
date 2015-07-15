@@ -24,16 +24,16 @@ document.addEventListener('DOMContentLoaded', function() {
 		var tab = this.id;
 		self.port.emit("clicked", tab);
 	}
-  document.getElementById('openapp').onclick = sendButtonClick;
+	document.getElementById('openapp').onclick = sendButtonClick;
 
 	function addElement(room, tabId) { 
-	  // create a new div element 
-	  // and give it some content 
-	  var newButton = document.createElement("button"); 
-	  var newContent = document.createTextNode("open_in_existing "+ room); // TODO language
-	  newButton.setAttribute("id", "tabId"+tabId);
-	  newButton.onclick = sendButtonClick;
-	  newButton.appendChild(newContent); //add the text node to the newly created div. 
+		// create a new div element 
+		// and give it some content 
+		var newButton = document.createElement("button"); 
+		var newContent = document.createTextNode("open_in_existing "+ room); // TODO language
+		newButton.setAttribute("id", "tabId"+tabId);
+		newButton.onclick = sendButtonClick;
+		newButton.appendChild(newContent); //add the text node to the newly created div. 
 
 	 buttonWrapper.appendChild(newButton);
 	}
