@@ -66,6 +66,19 @@ function updateViroom(url, tabId, windowId) {
     });
   });
 }
+function getRoomFromHash(url) {
+  if(url.indexOf("#")>=0) {
+    var hashvar,
+      hashvars = tab.url.split("#")[1].split("&");
+    for (var i = hashvars.length - 1; i >= 0; i--) {
+      hashvar = hashvars[i].split("=");
+      if(hashvar[0] == "room") {
+        return hashvar[1];
+      }
+    }
+  }
+  return false;
+}
 
 function addElement(url, room, tabId, windowId) { 
   // create a new div element 
@@ -88,8 +101,6 @@ function findViRoomieTabs(url) {
     url: "http://app.viroomie.com/*"
   };
   var room,
-    hashvars,
-    hashvar,
     roomCounter = 0,
     tab;
   chrome.tabs.query(queryInfo, function(tabs) {
@@ -97,21 +108,10 @@ function findViRoomieTabs(url) {
     urls = "";
     for(var el in tabs) {
       tab = tabs[el];
-      if(tab.url.indexOf("#")>=0) {
-        room = false;
-        hashvars = tab.url.split("#")[1].split("&");
-        for (var i = hashvars.length - 1; i >= 0; i--) {
-          hashvar = hashvars[i].split("=");
-          if(hashvar[0] == "room") {
-            room = hashvar[1];
-            break;
-          }
-        }
-        if(room) {
-          roomCounter++;
-          addElement(url, room, tab.id, tab.windowId);
-          // urls += "<br>"+tabs[el].url;
-        }
+      room = getRoomFromHash(tab.url);
+      if(room) {
+        roomCounter++;
+        addElement(url, room, tab.id, tab.windowId);
       }
     }
     // document.getElementById('msg').innerHTML = urls;
