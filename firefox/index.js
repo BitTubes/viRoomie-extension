@@ -2,6 +2,7 @@
 "use moz";
 
 var self = require('sdk/self');
+var _ = require("sdk/l10n").get;
 
 // a dummy function, to show how tests work.
 // to see how to test this function, look at test/test-index.js
@@ -70,7 +71,7 @@ tabs.on('activate', function (tab) {
 });
 var button = tbuttons.ToggleButton({
 	id: "viroomie",
-	label: "viRoomie", // TODO language
+	label: _("application_title"),
 	icon: {
 		"16": "./img/icon16.png",
 		"32": "./img/icon32.png",
@@ -118,6 +119,13 @@ function getRoomFromHash(url) {
 }
 panel.port.on("loaded", function(){
 	console.log("loaded");
+	// send translations to panel, because it cannot get them itself... COME ON Mozilla - you can do better!
+	panel.port.emit("locale", {
+		"open_new": _("open_new"),
+		"open_in_existing": _("open_in_existing", "$1"),
+		"or": _("or"),
+		"open_video_error": _("open_video_error")
+	});
 });
 panel.port.on("clicked", function(tabid){
 	console.log("clicked", tabid);

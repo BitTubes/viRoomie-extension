@@ -15,7 +15,26 @@
 
 
 //  +++++++++++++++ OPEN VIDEO ++++++++++++
-
+var LOCALE = null;
+function _(index, replacements) { // thanks Mozilla for making me write this for you
+	var str = LOCALE[index];
+	if(!str) {
+		console.error("Huston, we have a problem!");
+		return "grrrRRRRR";
+	}
+	var i=1;
+	if(!replacements) {
+		return str;
+	}
+	if("string" == typeof replacements) {
+		return str.split("$"+i).join(replacements);
+	} else { // assume array
+		for (i = 1; i <= replacements.length; i++) {
+			str = str.split("$"+i).join(replacements[i-1]);
+		}
+		return str;
+	}
+}
 
 document.addEventListener('DOMContentLoaded', function() {
 	var buttonWrapper = document.getElementById('updateapps');
@@ -30,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		// create a new div element 
 		// and give it some content 
 		var newButton = document.createElement("button"); 
-		var newContent = document.createTextNode("open_in_existing "+ room); // TODO language
+		var newContent = document.createTextNode(_("open_in_existing", room));
 		newButton.setAttribute("id", "tabId"+tabId);
 		newButton.onclick = sendButtonClick;
 		newButton.appendChild(newContent); //add the text node to the newly created div. 
@@ -47,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		if( roomCounter ) {
 			buttonWrapper.style.display = "block";
-			buttonWrapper.setAttribute("data-or", "or"); // TODO language
+			buttonWrapper.setAttribute("data-or", _("or"));
 		}
 	}
 	self.port.on("show", function onShow(data) {
@@ -63,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	self.port.on("hide", function onHide(tabId) {
 		var node = document.getElementById('tabId'+tabId);
 		console.log("hide",tabId, node);
-		if(node) { // TODO check if this really works!!!
+		if(node) {
 			node.parentNode.removeChild(node);
 			if(!--roomCounter) {
 				buttonWrapper.style.display = "none";
@@ -72,6 +91,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	});
 
+	self.port.on("locale", function(data) {
+		LOCALE = data;
+		document.getElementById('openapp').innerHTML = _("open_new");
+	});
 
 	self.port.emit("loaded");
 	buttonWrapper.style.display = "none";

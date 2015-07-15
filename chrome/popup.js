@@ -1,6 +1,6 @@
 /* jshint strict:false */
 
-
+var _ = chrome.i18n.getMessage;
 
 //  +++++++++++++++ GOOGLE ANALYTICS ++++++++++++
 
@@ -84,7 +84,7 @@ function addElement(url, room, tabId, windowId) {
   // create a new div element 
   // and give it some content 
   var newButton = document.createElement("button"); 
-  var newContent = document.createTextNode(chrome.i18n.getMessage("open_in_existing", [room]));
+  var newContent = document.createTextNode(_("open_in_existing", [room]));
   // newButton.setAttribute("data-room", room);
   newButton.setAttribute("id", "tabId"+tabId);
   newButton.onclick = updateViroom.bind(null,url, tabId, windowId);
@@ -94,7 +94,7 @@ function addElement(url, room, tabId, windowId) {
 }
 function findViRoomieTabs(url) {
   var buttonWrapper = document.getElementById('updateapps');
-  buttonWrapper.setAttribute("data-msg", chrome.i18n.getMessage("searching_rooms"));
+  buttonWrapper.setAttribute("data-msg", _("searching_rooms"));
 
   var queryInfo = {
     status: "complete",
@@ -116,7 +116,7 @@ function findViRoomieTabs(url) {
     }
     // document.getElementById('msg').innerHTML = urls;
     if(roomCounter) {
-      buttonWrapper.setAttribute("data-or", chrome.i18n.getMessage("or"));
+      buttonWrapper.setAttribute("data-or", _("or"));
     } else {
       buttonWrapper.style.display = "none";
     }
@@ -196,10 +196,10 @@ document.addEventListener('DOMContentLoaded', function() {
       
       if(url.indexOf("youtube.com/watch")>0 || url.indexOf("//nlv.bittubes.com")>=0) {
         // openViRoomie(url);
-        document.getElementById('openapp').innerHTML = chrome.i18n.getMessage("open_new");
+        document.getElementById('openapp').innerHTML = _("open_new");
         findViRoomieTabs(url);
       } else {
-        document.getElementById('msg').innerHTML = chrome.i18n.getMessage("open_video_error");
+        document.getElementById('msg').innerHTML = _("open_video_error");
         document.getElementById('updateapps').style.display = "none";
         document.getElementById('openapp').style.display = "none";
       }
