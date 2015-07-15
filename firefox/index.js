@@ -12,13 +12,13 @@ function dummy(text, callback) {
 exports.dummy = dummy;
 
 
-// var buttons = require('sdk/ui/button/action');
 var tbuttons = require('sdk/ui/button/toggle');
 var tabs = require("sdk/tabs");
 var panels = require("sdk/panel");
 
 function onCloseRoom(tab) {
-    panel.port.emit("hide", tab.id);
+  console.log("close", tab.id);
+  panel.port.emit("hide", tab.id);
 }
 tabs.on('pageshow', function(tab) {
   console.log("pageshow:",tab.url);
@@ -41,18 +41,6 @@ tabs.on('activate', function (tab) {
       )
     ) { 
     console.log("youtube or bt localhost activated", tab);
-    // var button = tbuttons.ActionButton({
-    //   id: "mozilla-link",
-    //   label: "Visit Mozilla",
-    //   icon: {
-    //     "16": "./img/icon16.png",
-    //     "32": "./img/icon32.png",
-    //     "64": "./img/icon64.png",
-    //     "128": "./img/icon128.png",
-    //     "256": "./img/icon256.png",
-    //   },
-    //   onClick: handleClick
-    // });
   } else {
     console.log("other tab activated", tab);
   }
@@ -96,30 +84,13 @@ function getRoomFromHash(url) {
 }
 panel.port.on("loaded", function(){
   console.log("loaded");
-  var myTabs = [],
-    tab,
-    room;
-  for (var i = tabs.length - 1; i >= 0; i--) {
-    tab = tabs[i];
-    room = getRoomFromHash(tab.url);
-    if(room) {
-      roomCounter++;
-      myTabs.push({"id": tab.id, "room": room});
-    }
-  }
-  console.log("myTabs", myTabs, tabs);
-  panel.port.emit("show", myTabs);
 });
 panel.port.on("clicked", function(tabid){
   console.log("clicked", tabid);
 });
-// function handleClick() {
-//   // tabs.open("http://www.mozilla.org/");
-//   panel.show({
-//     position: button
-//   });
-// }
+
 function handleToggleClick(state) {
+  console.log("handleToggleClick",state);
   if (state.checked) {
     panel.show({
       position: button
@@ -132,7 +103,6 @@ function handleToggleClick(state) {
       tab = tabs[i];
       room = getRoomFromHash(tab.url);
       if(room) {
-        roomCounter++;
         myTabs.push({"id": tab.id, "room": room});
       }
     }
@@ -149,8 +119,6 @@ var pageMod = require("sdk/page-mod");
 pageMod.PageMod({
   include: "app.viroomie.com",
   contentScriptFile: ["./load_video_content_script.js"]
-  // contentScript: 'document.body.innerHTML = ' +
-  //                ' "<h1>Page matches ruleset</h1>";'
 });
 
 
@@ -161,5 +129,4 @@ pageMod.PageMod({
 
 function openViRoomie(url) {
   tabs.open("http://app.viroomie.com#video="+(url.split("=").join("%3D").split("&").join("%26")));
-  // chrome.tabs.create( {url: "http://app.viroomie.com#video="+(url.split("=").join("%3D").split("&").join("%26"))} );
 }
