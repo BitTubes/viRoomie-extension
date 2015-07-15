@@ -16,20 +16,43 @@ var tbuttons = require('sdk/ui/button/toggle');
 var tabs = require("sdk/tabs");
 var panels = require("sdk/panel");
 
+var rommTabIds = {};
+var roomCount = 0;
+
+function updatePanelHeight() {
+	var height = panel_h["bodymargin"] + panel_h["button"];
+	if(roomCount) {
+		height += roomCount*panel_h["button"] + panel_h["updateapps"];
+	}
+	panel.resize(panel_w, height);
+}
 function onCloseRoom(tab) {
 	console.log("close", tab.id);
 	panel.port.emit("hide", tab.id);
+	delete rommTabIds[tab.id];
+	roomCount--;
+	updatePanelHeight();
 }
 tabs.on('pageshow', function(tab) {
 	console.log("pageshow:",tab.url);
 	var room = getRoomFromHash(tab.url);
-	if(room) {
-		console.log("pageshow mit room",tab);
+	if(room && !rommTabIds[tab.id]) {
+		console.log("pageshow room opened",tab);
 		panel.port.emit("show1", {"id": tab.id, "room": room});
 		tab.on("close",onCloseRoom);
-	} else {
-		console.log("pageshow ohne room",tab);
+		rommTabIds[tab.id] = room;
+		roomCount++;
+		updatePanelHeight();
+	} else if(rommTabIds[tab.id] && !room) {
+		console.log("pageshow room closed",tab);
+		onCloseRoom(tab);
+	} else if(room && rommTabIds[tab.id] && room != rommTabIds[tab.id]){
+		console.log("pageshow room changed",tab, room);
 		panel.port.emit("hide", tab.id); // this will produce false positives
+		panel.port.emit("show1", {"id": tab.id, "room": room});
+		rommTabIds[tab.id] = room;
+	} else {
+		console.log("pageshow no change necessary",tab);
 	}
 });
 tabs.on('activate', function (tab) {
@@ -61,11 +84,22 @@ var button = tbuttons.ToggleButton({
 function handleHide() {
 	button.state('window', {checked: false});
 }
+
+var panel_h = {},
+	panel_w;
+panel_h["button"] = 29;
+panel_h["bodymargin"] = 16+10;
+panel_h["updateapps"] = 30;
+panel_w = 216;
+
+
 var panel = panels.Panel({
 	contentURL: self.data.url("popup.html"),
 	contentScriptFile: ["./popup.js"],
 	contentScriptWhen: "ready",
-	contextMenu: true,
+	// contextMenu: true,
+	height: panel_w,
+	width: panel_h["bodymargin"] + panel_h["button"],
 	onHide: handleHide
 });
 
@@ -99,13 +133,16 @@ function handleToggleClick(state) {
 		var myTabs = [],
 			tab,
 			room;
+		roomCount = 0;
 		for (var i = tabs.length - 1; i >= 0; i--) {
 			tab = tabs[i];
 			room = getRoomFromHash(tab.url);
 			if(room) {
+				roomCount++;
 				myTabs.push({"id": tab.id, "room": room});
 			}
 		}
+		updatePanelHeight();
 		console.log("myTabs", myTabs, tabs);
 		panel.port.emit("show", myTabs);
 	}
