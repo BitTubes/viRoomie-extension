@@ -1,28 +1,22 @@
 /* jshint strict:false */
 
-var tabs = require("sdk/tabs");
-
+// var tabs = require("sdk/tabs");
 
 //  +++++++++++++++ GOOGLE ANALYTICS ++++++++++++
 
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-65099990-1']);
-_gaq.push(['_trackPageview']);
+// var _gaq = _gaq || [];
+// _gaq.push(['_setAccount', 'UA-65099990-3']);
+// _gaq.push(['_trackPageview']);
 
-(function() {
-  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-  ga.src = 'https://ssl.google-analytics.com/ga.js';
-  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-})();
+// (function() {
+//   var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+//   ga.src = 'https://ssl.google-analytics.com/ga.js';
+//   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+// })();
 
 
 
 //  +++++++++++++++ OPEN VIDEO ++++++++++++
-
-function openViRoomie(url) {
-  tabs.open("http://app.viroomie.com#video="+(url.split("=").join("%3D").split("&").join("%26")));
-  // chrome.tabs.create( {url: "http://app.viroomie.com#video="+(url.split("=").join("%3D").split("&").join("%26"))} );
-}
 
 // function updateViroom(url, tabId, windowId) {
 //   chrome.tabs.sendMessage(tabId, {"a":"url", "url":url}, function(data) {
@@ -45,18 +39,9 @@ function openViRoomie(url) {
 //   });
 // }
 
-// function addElement(url, room, tabId, windowId) { 
-//   // create a new div element 
-//   // and give it some content 
-//   var newButton = document.createElement("button"); 
-//   var newContent = document.createTextNode(chrome.i18n.getMessage("open_in_existing", [room]));
-//   // newButton.setAttribute("data-room", room);
-//   newButton.setAttribute("id", "tabId"+tabId);
-//   newButton.onclick = updateViroom.bind(null,url, tabId, windowId);
-//   newButton.appendChild(newContent); //add the text node to the newly created div. 
 
-//   document.getElementById("updateapps").appendChild(newButton);
-// }
+
+
 // function findViRoomieTabs(url) {
 //   var buttonWrapper = document.getElementById('updateapps');
 //   buttonWrapper.setAttribute("data-msg", chrome.i18n.getMessage("searching_rooms"));
@@ -143,7 +128,60 @@ function openViRoomie(url) {
 // }
 
 
-// document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
+	var buttonWrapper = document.getElementById('updateapps');
+
+	function sendButtonClick() {
+		var tab = this.id;
+		self.port.emit("clicked", tab);
+	}
+  document.getElementById('openapp').onclick = sendButtonClick;
+
+	function addElement(room, tabId) { 
+	  // create a new div element 
+	  // and give it some content 
+	  var newButton = document.createElement("button"); 
+	  var newContent = document.createTextNode("open_in_existing "+ room); // TODO language
+	  newButton.setAttribute("id", "tabId"+tabId);
+	  newButton.onclick = sendButtonClick;
+	  newButton.appendChild(newContent); //add the text node to the newly created div. 
+
+	 buttonWrapper.appendChild(newButton);
+	}
+
+
+	var roomCounter = 0;
+	function showButtons(data) {
+		for (var i = data.length - 1; i >= 0; i--) {
+			roomCounter++;
+			addElement(data[i].room, data[i].id);
+		}
+		buttonWrapper.style.display = "block";
+	  buttonWrapper.setAttribute("data-or", "or"); // TODO language
+	}
+	self.port.on("show", function onShow(data) {
+		console.log("show",data);
+		buttonWrapper.innerHTML = "";
+		showButtons(data);
+	});
+	self.port.on("show1", function onShow(data) {
+		console.log("show1",data);
+		showButtons([data]);
+	});
+
+	self.port.on("hide", function onHide(tabId) {
+		console.log("hide",tabId);
+		var node = document.getElementById('tabId'+tabId);
+		if(node) { // TODO check if this really works!!!
+			node.parentNode.removeChild(node);
+			if(!--roomCounter) {
+				buttonWrapper.style.display = "none";
+			}
+		}
+	});
+
+
+	self.port.emit("loaded");
 //   getCurrentTabUrl(function(url) {
 //     processUrl(url, function() { // inside viRoomie
 
@@ -157,8 +195,7 @@ function openViRoomie(url) {
 //         document.getElementById('updateapps').style.display = "none";
 //         document.getElementById('openapp').style.display = "none";
 //       }
-      document.getElementById('external').style.display = "block";
-      document.getElementById('openapp').onclick = openViRoomie.bind(null,url);
+      // document.getElementById('external').style.display = "block";
 //     });
 //   });
-// });
+});
