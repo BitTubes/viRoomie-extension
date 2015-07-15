@@ -156,8 +156,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			roomCounter++;
 			addElement(data[i].room, data[i].id);
 		}
-		buttonWrapper.style.display = "block";
-	  buttonWrapper.setAttribute("data-or", "or"); // TODO language
+		if( roomCounter ) {
+			buttonWrapper.style.display = "block";
+			buttonWrapper.setAttribute("data-or", "or"); // TODO language
+		}
 	}
 	self.port.on("show", function onShow(data) {
 		console.log("show",data);
@@ -197,5 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
 //       }
       // document.getElementById('external').style.display = "block";
 //     });
+	buttonWrapper.style.display = "none";
+	document.getElementById('external').style.display = "block";
 //   });
 });

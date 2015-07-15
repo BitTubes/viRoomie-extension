@@ -9,14 +9,29 @@
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Poiret+One' rel='stylesheet'>
     <title>Getting Started Extension's Popup</title>
     <style>
+      *, *::before, *::after {
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+      html { /* only required for firefox */
+        height: 100%;
+        padding: 0;
+        border: 1px solid #fff;
+        margin:0;
+      }
       body {
+        height: 100%;
+        padding: 0;
+        border: 0;
+        margin:0;
         background-color: #000;
         color: #fff;
         font-family: 'Source Sans Pro',sans-serif;
         font-size: 100%;
       }
       body > div {
-        /*display:none;*/
+        display:none;
       }
       #msg {
         width: 200px;
@@ -73,16 +88,12 @@
     <!-- <script src="popup.js"></script> -->
   </head>
   <body>
-  test
     <div id="app">
-    app
 <!--       <button id="screenshot">Take Screenshot</button>
       <button id="email">Email Invite</button> -->
     </div>
     <div id="external">
-
-      external
-      <div id="msg">msg</div>
+      <div id="msg"></div>
       <button id="openapp">open</button>
       <div id="updateapps">
       </div>
