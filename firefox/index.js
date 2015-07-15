@@ -55,31 +55,42 @@ tabs.on('pageshow', function(tab) {
 	} else {
 		console.log("pageshow no change necessary",tab);
 	}
+	toggleButton(tab.url);
 });
-tabs.on('activate', function (tab) {
-	console.log('active: ' + tabs.activeTab.url);
-	if(tabs.activeTab.url.indexOf("//www.youtube.com") > 0 
-		|| tabs.activeTab.url.indexOf("localhost") >= 0 
+var button;
+function toggleButton(url) {
+	if(url.indexOf("youtube.com") > 0 
+		|| url.indexOf("localhost") >= 0 
 		|| (
-			tabs.activeTab.url.indexOf("//nlv.bittubes.com") > 0 && tabs.activeTab.url.indexOf("uid=")
+			url.indexOf("nlv.bittubes.com") > 0 && url.indexOf("uid=") > 0
 			)
 		) { 
-		console.log("youtube or bt localhost activated", tab);
+		console.log("youtube or bt localhost activated");
+		if(!button) {
+			button = tbuttons.ToggleButton({
+				id: "viroomie",
+				label: _("application_title"),
+				icon: {
+					"16": "./img/icon16.png",
+					"32": "./img/icon32.png",
+					"64": "./img/icon64.png",
+					"128": "./img/icon128.png",
+					"256": "./img/icon256.png",
+				},
+				onClick: handleToggleClick
+			});
+		}
 	} else {
-		console.log("other tab activated", tab);
+		console.log("other tab activated");
+		if(button) {
+			button.destroy();
+			button = null;
+		}
 	}
-});
-var button = tbuttons.ToggleButton({
-	id: "viroomie",
-	label: _("application_title"),
-	icon: {
-		"16": "./img/icon16.png",
-		"32": "./img/icon32.png",
-		"64": "./img/icon64.png",
-		"128": "./img/icon128.png",
-		"256": "./img/icon256.png",
-	},
-	onClick: handleToggleClick
+}
+tabs.on('activate', function (tab) {
+	console.log('active: ' + tabs.activeTab.url);
+	toggleButton(tabs.activeTab.url);
 });
 
 function handleHide() {
@@ -141,25 +152,29 @@ panel.port.on("clicked", function(tabId){
 function handleToggleClick(state) {
 	console.log("handleToggleClick",state);
 	if (state.checked) {
+		var url = tabs.activeTab.url;
+		if(url.indexOf("youtube.com/watch")>0 || url.indexOf("//nlv.bittubes.com")>=0) {
+			var myTabs = [],
+				tab,
+				room;
+			roomCount = 0;
+			for (var i = tabs.length - 1; i >= 0; i--) {
+				tab = tabs[i];
+				room = getRoomFromHash(tab.url);
+				if(room) {
+					roomCount++;
+					myTabs.push({"id": tab.id, "room": room});
+				}
+			}
+			panel.port.emit("show", myTabs);
+		} else {
+			panel.port.emit("open_video_error");
+		}
+		updatePanelHeight();
 		panel.show({
 			position: button
 		});
-
-		var myTabs = [],
-			tab,
-			room;
-		roomCount = 0;
-		for (var i = tabs.length - 1; i >= 0; i--) {
-			tab = tabs[i];
-			room = getRoomFromHash(tab.url);
-			if(room) {
-				roomCount++;
-				myTabs.push({"id": tab.id, "room": room});
-			}
-		}
-		updatePanelHeight();
 		console.log("myTabs", myTabs, tabs);
-		panel.port.emit("show", myTabs);
 	}
 }
 

@@ -68,6 +68,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			buttonWrapper.style.display = "block";
 			buttonWrapper.setAttribute("data-or", _("or"));
 		}
+		document.getElementById('updateapps').style.display = "block";
+		document.getElementById('openapp').style.display = "block";
+		document.getElementById('msg').innerHTML = "";
 	}
 	self.port.on("show", function onShow(data) {
 		console.log("show",data);
@@ -77,6 +80,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	self.port.on("show1", function onShow(data) {
 		console.log("show1",data);
 		showButtons([data]);
+	});
+	self.port.on("open_video_error", function onShow(data) {
+		console.log("show",data);
+		document.getElementById('updateapps').style.display = "none";
+		document.getElementById('openapp').style.display = "none";
+		document.getElementById('msg').innerHTML = _("open_video_error");
 	});
 
 	self.port.on("hide", function onHide(tabId) {
