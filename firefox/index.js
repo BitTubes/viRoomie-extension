@@ -6,11 +6,11 @@ var _ = require("sdk/l10n").get;
 
 // a dummy function, to show how tests work.
 // to see how to test this function, look at test/test-index.js
-function dummy(text, callback) {
-	callback(text);
-}
+// function dummy(text, callback) {
+// 	callback(text);
+// }
 
-exports.dummy = dummy;
+// exports.dummy = dummy;
 
 
 var tbuttons = require('sdk/ui/button/toggle');
@@ -127,8 +127,15 @@ panel.port.on("loaded", function(){
 		"open_video_error": _("open_video_error")
 	});
 });
-panel.port.on("clicked", function(tabid){
-	console.log("clicked", tabid);
+panel.port.on("clicked", function(tabId){
+	console.log("clicked", tabId);
+	if(tabId=="openapp") {
+		openViRoomie(tabs.activeTab.url);
+	} else {
+		tabId = tabId.substr(5);
+		console.log("update tabId:", tabId);
+		updateViroom(url, tabId);
+	}
 });
 
 function handleToggleClick(state) {
@@ -160,10 +167,16 @@ function handleToggleClick(state) {
 
 
 var pageMod = require("sdk/page-mod");
-
+var tabWorker = {};
 pageMod.PageMod({
 	include: "app.viroomie.com",
-	contentScriptFile: ["./load_video_content_script.js"]
+	contentScriptFile: ["./load_video_content_script.js"],
+	onAttach: function(worker) {
+		tabWorker[worker.tab.id] = worker;
+		worker.on('detach', function () {
+      delete tabWorker[worker.tab.id];
+    });
+  }
 });
 
 
@@ -174,4 +187,25 @@ pageMod.PageMod({
 
 function openViRoomie(url) {
 	tabs.open("http://app.viroomie.com#video="+(url.split("=").join("%3D").split("&").join("%26")));
+}
+function findTabById(tabId) {
+	for (var i = tabs.length - 1; i >= 0; i--) {
+		if(tabs[i].id == tabId) {
+			return tabs[i];
+		}
+	}
+	return false;
+}
+function updateViroom(url, tabId) {
+  // chrome.tabs.executeScript(tabId, {file: "load_video_content_script.js"});
+  var tab = findTabById(tabId);
+  if(!tab) {
+  	return;
+  }
+ 	tabWorker[tabId].port.emit("viroomie", {"a":"url", "url":url});
+ 	tabWorker[tabId].port.on("cb_url", function(data) {
+    console.log("response from content-script: ",data);
+	  tab.activate();
+	  tab.window.activate();
+  });
 }

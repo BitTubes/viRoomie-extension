@@ -21,7 +21,6 @@
 // 	}
 
 // });
-
 self.port.on("viroomie", function(message) {
 	var callback_msg;
 	switch(message.a) {
@@ -30,14 +29,17 @@ self.port.on("viroomie", function(message) {
 
 		break;
 		case "url":
-			var m = document.getElementById("m");
-			m.value = "/video "+message.url;
-			m.focus();
-			document.getElementById("m");
-			callback_msg = true;
+			try {
+				var m = document.getElementById("m");
+				m.value = "/video "+message.url;
+				m.focus();
+				callback_msg = true;
+			} catch(e) {
+				callback_msg = false;
+			}
 		break;
 		default:
-		console.log("unknown state:", message.a);
+			console.log("unknown state:", message.a);
 			callback_msg = false;
 
 	}
