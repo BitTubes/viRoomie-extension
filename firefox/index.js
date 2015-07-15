@@ -84,7 +84,7 @@ var panel = panels.Panel({
 function getRoomFromHash(url) {
   if(url.indexOf("#")>=0) {
     var hashvar,
-      hashvars = tab.url.split("#")[1].split("&");
+      hashvars = url.split("#")[1].split("&");
     for (var i = hashvars.length - 1; i >= 0; i--) {
       hashvar = hashvars[i].split("=");
       if(hashvar[0] == "room") {
