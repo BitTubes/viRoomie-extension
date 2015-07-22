@@ -32,6 +32,10 @@ self.port.on("viroomie", function(message) {
 			try {
 				var m = document.getElementById("m");
 				m.value = "/video "+message.url;
+				var b = document.getElementById("send");
+				if(b.click) {
+					b.click();
+				}
 				m.focus();
 				callback_msg = true;
 			} catch(e) {
