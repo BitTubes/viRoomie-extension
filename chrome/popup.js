@@ -25,11 +25,36 @@ _gaq.push(['_trackPageview']);
 
 
 //  +++++++++++++++ OPEN VIDEO ++++++++++++
+function _addElement(url, room, tabId, windowId) { 
+  // create a new div element 
+  // and give it some content 
+  var newButton = document.createElement("button"); 
+  var newContent = document.createTextNode(_("open_in_existing", [room]));
+  // newButton.setAttribute("data-room", room);
+  newButton.setAttribute("id", "tabId"+tabId);
+  newButton.onclick = updateViroom.bind(null,url, tabId, windowId);
+  newButton.appendChild(newContent); //add the text node to the newly created div. 
+
+  document.getElementById("updateapps").appendChild(newButton);
+}
+function _getRoomFromHash(url) {
+  if(url.indexOf("#")>=0) {
+    var hashvar,
+      hashvars = url.split("#")[1].split("&");
+    for (var i = hashvars.length - 1; i >= 0; i--) {
+      hashvar = hashvars[i].split("=");
+      if(hashvar[0] == "room") {
+        return hashvar[1];
+      }
+    }
+  }
+  return false;
+}
+
 
 function openViRoomie(url) {
   chrome.tabs.create( {url: "http://app.viroomie.com#video="+(url.split("=").join("%3D").split("&").join("%26"))} );
 }
-
 function updateViroom(url, tabId, windowId) {
   // chrome.tabs.executeScript(tabId, {file: "load_video_content_script.js"});
   chrome.tabs.sendMessage(tabId, {"a":"url", "url":url}, function(data) {
@@ -51,32 +76,7 @@ function updateViroom(url, tabId, windowId) {
     });
   });
 }
-function getRoomFromHash(url) {
-  if(url.indexOf("#")>=0) {
-    var hashvar,
-      hashvars = url.split("#")[1].split("&");
-    for (var i = hashvars.length - 1; i >= 0; i--) {
-      hashvar = hashvars[i].split("=");
-      if(hashvar[0] == "room") {
-        return hashvar[1];
-      }
-    }
-  }
-  return false;
-}
 
-function addElement(url, room, tabId, windowId) { 
-  // create a new div element 
-  // and give it some content 
-  var newButton = document.createElement("button"); 
-  var newContent = document.createTextNode(_("open_in_existing", [room]));
-  // newButton.setAttribute("data-room", room);
-  newButton.setAttribute("id", "tabId"+tabId);
-  newButton.onclick = updateViroom.bind(null,url, tabId, windowId);
-  newButton.appendChild(newContent); //add the text node to the newly created div. 
-
-  document.getElementById("updateapps").appendChild(newButton);
-}
 function findViRoomieTabs(url) {
   var buttonWrapper = document.getElementById('updateapps');
   buttonWrapper.setAttribute("data-msg", _("searching_rooms"));
@@ -93,10 +93,10 @@ function findViRoomieTabs(url) {
     urls = "";
     for(var el in tabs) {
       tab = tabs[el];
-      room = getRoomFromHash(tab.url);
+      room = _getRoomFromHash(tab.url);
       if(room) {
         roomCounter++;
-        addElement(url, room, tab.id, tab.windowId);
+        _addElement(url, room, tab.id, tab.windowId);
       }
     }
     // document.getElementById('msg').innerHTML = urls;
@@ -108,14 +108,11 @@ function findViRoomieTabs(url) {
   });
 
 }
-// function updateViRoomie(url) {
-//   chrome.tabs.sendMessage(integer tabId, any message, object options, function responseCallback);
-// }
 
 
 
 //  +++++++++++++++ UTIL ++++++++++++
-var currentTabId = null;
+// var _currentTabId = null;
 function getCurrentTabUrl(callback) {
   // Query filter to be passed to chrome.tabs.query - see
   // https://developer.chrome.com/extensions/tabs#method-query
@@ -131,7 +128,7 @@ function getCurrentTabUrl(callback) {
     // A window can only have one active tab at a time, so the array consists of
     // exactly one tab.
     var currentTab = tabs[0];
-    currentTabId = currentTab.id;
+    // _currentTabId = currentTab.id;
     // A tab is a plain object that provides information about the tab.
     // See https://developer.chrome.com/extensions/tabs#type-Tab
     var url = currentTab.url;
@@ -180,7 +177,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }, function(url) { // external website
       
       if(url.indexOf("youtube.com/watch")>0 || url.indexOf("//nlv.bittubes.com")>=0) {
-        // openViRoomie(url);
         document.getElementById('openapp').innerHTML = _("open_new");
         findViRoomieTabs(url);
       } else {

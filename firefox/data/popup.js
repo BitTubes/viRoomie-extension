@@ -40,10 +40,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	var p_updateapps = document.getElementById('updateapps');
 	var p_openapp = document.getElementById('openapp');
 	var p_msg = document.getElementById('msg');
+	var roomCounter = 0;
 
 	function sendButtonClick() {
 		var tab = this.id;
-		self.port.emit("clicked", tab);
+		addon.port.emit("clicked", tab);
 	}
 	p_openapp.onclick = sendButtonClick;
 
@@ -60,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 
-	var roomCounter = 0;
 	function showButtons(data) {
 		for (var i = data.length - 1; i >= 0; i--) {
 			roomCounter++;
@@ -77,23 +77,23 @@ document.addEventListener('DOMContentLoaded', function() {
 		p_openapp.style.display = "block";
 		p_msg.innerHTML = "";
 	}
-	self.port.on("show", function onShow(data) {
+	addon.port.on("show", function onShow(data) {
 		console.log("show",data);
 		p_updateapps.innerHTML = "";
 		showButtons(data);
 	});
-	self.port.on("show1", function onShow(data) {
+	addon.port.on("show1", function onShow(data) {
 		console.log("show1",data);
 		showButtons([data]);
 	});
-	self.port.on("open_video_error", function onShow(data) {
+	addon.port.on("open_video_error", function onShow(data) {
 		console.log("show",data);
 		p_updateapps.style.display = "none";
 		p_openapp.style.display = "none";
 		p_msg.textContent = _("open_video_error");
 	});
 
-	self.port.on("hide", function onHide(tabId) {
+	addon.port.on("hide", function onHide(tabId) {
 		var node = document.getElementById('tabId'+tabId);
 		console.log("hide",tabId, node);
 		if(node) {
@@ -105,12 +105,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	});
 
-	self.port.on("locale", function(data) {
+	addon.port.on("locale", function(data) {
 		LOCALE = data;
 		p_openapp.textContent = _("open_new");
 	});
 
-	self.port.emit("loaded");
+	addon.port.emit("loaded");
 	p_updateapps.style.display = "none";
 	document.getElementById('external').style.display = "block";
 });
