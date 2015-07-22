@@ -37,13 +37,15 @@ function _(index, replacements) { // thanks Mozilla for making me write this for
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-	var buttonWrapper = document.getElementById('updateapps');
+	var p_updateapps = document.getElementById('updateapps');
+	var p_openapp = document.getElementById('openapp');
+	var p_msg = document.getElementById('msg');
 
 	function sendButtonClick() {
 		var tab = this.id;
 		self.port.emit("clicked", tab);
 	}
-	document.getElementById('openapp').onclick = sendButtonClick;
+	p_openapp.onclick = sendButtonClick;
 
 	function addElement(room, tabId) { 
 		// create a new div element 
@@ -54,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		newButton.onclick = sendButtonClick;
 		newButton.appendChild(newContent); //add the text node to the newly created div. 
 
-	 buttonWrapper.appendChild(newButton);
+	 p_updateapps.appendChild(newButton);
 	}
 
 
@@ -65,16 +67,19 @@ document.addEventListener('DOMContentLoaded', function() {
 			addElement(data[i].room, data[i].id);
 		}
 		if( roomCounter ) {
-			buttonWrapper.style.display = "block";
-			buttonWrapper.setAttribute("data-or", _("or"));
+			console.log("show p_updateapps",roomCounter);
+			p_updateapps.style.display = "block";
+			p_updateapps.setAttribute("data-or", _("or"));
+		} else {
+			console.log("hide p_updateapps");
+			p_updateapps.style.display = "none";
 		}
-		document.getElementById('updateapps').style.display = "block";
-		document.getElementById('openapp').style.display = "block";
-		document.getElementById('msg').innerHTML = "";
+		p_openapp.style.display = "block";
+		p_msg.innerHTML = "";
 	}
 	self.port.on("show", function onShow(data) {
 		console.log("show",data);
-		buttonWrapper.innerHTML = "";
+		p_updateapps.innerHTML = "";
 		showButtons(data);
 	});
 	self.port.on("show1", function onShow(data) {
@@ -83,9 +88,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 	self.port.on("open_video_error", function onShow(data) {
 		console.log("show",data);
-		document.getElementById('updateapps').style.display = "none";
-		document.getElementById('openapp').style.display = "none";
-		document.getElementById('msg').innerHTML = _("open_video_error");
+		p_updateapps.style.display = "none";
+		p_openapp.style.display = "none";
+		p_msg.innerHTML = _("open_video_error");
 	});
 
 	self.port.on("hide", function onHide(tabId) {
@@ -94,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if(node) {
 			node.parentNode.removeChild(node);
 			if(!--roomCounter) {
-				buttonWrapper.style.display = "none";
+				p_updateapps.style.display = "none";
 			}
 			console.log("roomCounter", roomCounter);
 		}
@@ -102,10 +107,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	self.port.on("locale", function(data) {
 		LOCALE = data;
-		document.getElementById('openapp').innerHTML = _("open_new");
+		p_openapp.innerHTML = _("open_new");
 	});
 
 	self.port.emit("loaded");
-	buttonWrapper.style.display = "none";
+	p_updateapps.style.display = "none";
 	document.getElementById('external').style.display = "block";
 });

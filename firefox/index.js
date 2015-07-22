@@ -59,6 +59,7 @@ tabs.on('pageshow', function(tab) {
 });
 var button;
 function toggleButton(url) {
+	url = url.split("#")[0];
 	if(url.indexOf("youtube.com") > 0 
 		|| url.indexOf("localhost") >= 0 
 		|| (
@@ -83,6 +84,7 @@ function toggleButton(url) {
 	} else {
 		console.log("other tab activated");
 		if(button) {
+			panel.hide();
 			button.destroy();
 			button = null;
 		}
@@ -94,7 +96,9 @@ tabs.on('activate', function (tab) {
 });
 
 function handleHide() {
-	button.state('window', {checked: false});
+	if(button) { // hide only makes sense if it wasnt triggered by hiding the button
+		button.state('window', {checked: false});
+	}
 }
 
 var panel_h = {},
@@ -152,7 +156,7 @@ panel.port.on("clicked", function(tabId){
 function handleToggleClick(state) {
 	console.log("handleToggleClick",state);
 	if (state.checked) {
-		var url = tabs.activeTab.url;
+		var url = tabs.activeTab.url.split("#")[0];
 		if(url.indexOf("youtube.com/watch")>0 || url.indexOf("//nlv.bittubes.com")>=0) {
 			var myTabs = [],
 				tab,
@@ -174,7 +178,6 @@ function handleToggleClick(state) {
 		panel.show({
 			position: button
 		});
-		console.log("myTabs", myTabs, tabs);
 	}
 }
 
