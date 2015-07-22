@@ -104,9 +104,9 @@ function handleHide() {
 var panel_h = {},
 	panel_w;
 panel_h["button"] = 29;
-panel_h["bodymargin"] = 16+10;
+panel_h["bodymargin"] = 16+10+5;
 panel_h["updateapps"] = 30;
-panel_w = 216;
+panel_w = 220;//216;
 
 
 var panel = panels.Panel({
@@ -172,6 +172,7 @@ function handleToggleClick(state) {
 			}
 			panel.port.emit("show", myTabs);
 		} else {
+			roomCount=0;
 			panel.port.emit("open_video_error");
 		}
 		updatePanelHeight();
