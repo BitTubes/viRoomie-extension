@@ -1,6 +1,6 @@
 /* jshint strict:false */
 
-
+var _ = chrome.i18n.getMessage;
 
 //  +++++++++++++++ GOOGLE ANALYTICS ++++++++++++
 
@@ -66,12 +66,25 @@ function updateViroom(url, tabId, windowId) {
     });
   });
 }
+function getRoomFromHash(url) {
+  if(url.indexOf("#")>=0) {
+    var hashvar,
+      hashvars = url.split("#")[1].split("&");
+    for (var i = hashvars.length - 1; i >= 0; i--) {
+      hashvar = hashvars[i].split("=");
+      if(hashvar[0] == "room") {
+        return hashvar[1];
+      }
+    }
+  }
+  return false;
+}
 
 function addElement(url, room, tabId, windowId) { 
   // create a new div element 
   // and give it some content 
   var newButton = document.createElement("button"); 
-  var newContent = document.createTextNode(chrome.i18n.getMessage("open_in_existing", [room]));
+  var newContent = document.createTextNode(_("open_in_existing", [room]));
   // newButton.setAttribute("data-room", room);
   newButton.setAttribute("id", "tabId"+tabId);
   newButton.onclick = updateViroom.bind(null,url, tabId, windowId);
@@ -81,15 +94,13 @@ function addElement(url, room, tabId, windowId) {
 }
 function findViRoomieTabs(url) {
   var buttonWrapper = document.getElementById('updateapps');
-  buttonWrapper.setAttribute("data-msg", chrome.i18n.getMessage("searching_rooms"));
+  buttonWrapper.setAttribute("data-msg", _("searching_rooms"));
 
   var queryInfo = {
     status: "complete",
     url: "http://app.viroomie.com/*"
   };
   var room,
-    hashvars,
-    hashvar,
     roomCounter = 0,
     tab;
   chrome.tabs.query(queryInfo, function(tabs) {
@@ -97,26 +108,15 @@ function findViRoomieTabs(url) {
     urls = "";
     for(var el in tabs) {
       tab = tabs[el];
-      if(tab.url.indexOf("#")>=0) {
-        room = false;
-        hashvars = tab.url.split("#")[1].split("&");
-        for (var i = hashvars.length - 1; i >= 0; i--) {
-          hashvar = hashvars[i].split("=");
-          if(hashvar[0] == "room") {
-            room = hashvar[1];
-            break;
-          }
-        }
-        if(room) {
-          roomCounter++;
-          addElement(url, room, tab.id, tab.windowId);
-          // urls += "<br>"+tabs[el].url;
-        }
+      room = getRoomFromHash(tab.url);
+      if(room) {
+        roomCounter++;
+        addElement(url, room, tab.id, tab.windowId);
       }
     }
     // document.getElementById('msg').innerHTML = urls;
     if(roomCounter) {
-      buttonWrapper.setAttribute("data-or", chrome.i18n.getMessage("or"));
+      buttonWrapper.setAttribute("data-or", _("or"));
     } else {
       buttonWrapper.style.display = "none";
     }
@@ -196,10 +196,10 @@ document.addEventListener('DOMContentLoaded', function() {
       
       if(url.indexOf("youtube.com/watch")>0 || url.indexOf("//nlv.bittubes.com")>=0) {
         // openViRoomie(url);
-        document.getElementById('openapp').innerHTML = chrome.i18n.getMessage("open_new");
+        document.getElementById('openapp').innerHTML = _("open_new");
         findViRoomieTabs(url);
       } else {
-        document.getElementById('msg').innerHTML = chrome.i18n.getMessage("open_video_error");
+        document.getElementById('msg').innerHTML = _("open_video_error");
         document.getElementById('updateapps').style.display = "none";
         document.getElementById('openapp').style.display = "none";
       }
