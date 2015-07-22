@@ -1,8 +1,11 @@
 {
   "title": "viRoomie",
   "name": "viroomie-firefox",
-  "version": "0.0.1",
+  "version": "0.9.0",
   "description": "Open viRooms directly from your supported video website like YouTube and share the viRoom you are in with friends.",
+  "author": "Jörn Berkefeld, BitTubes GmbH",
+  "homepage": "http://viroomie.com",
+  "icon": "./img/icon128.png",
   "main": "index.js",
   "scripts": {
     "start": "jpm run",

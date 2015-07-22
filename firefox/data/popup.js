@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		console.log("show",data);
 		p_updateapps.style.display = "none";
 		p_openapp.style.display = "none";
-		p_msg.innerHTML = _("open_video_error");
+		p_msg.textContent = _("open_video_error");
 	});
 
 	self.port.on("hide", function onHide(tabId) {
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	self.port.on("locale", function(data) {
 		LOCALE = data;
-		p_openapp.innerHTML = _("open_new");
+		p_openapp.textContent = _("open_new");
 	});
 
 	self.port.emit("loaded");
