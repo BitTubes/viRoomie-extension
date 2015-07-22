@@ -16,21 +16,6 @@ _gaq.push(['_trackPageview']);
 
 
 
-//  +++++++++++++++ Screenshot ++++++++++++
-
-// var screen_id = 100;
-// function makeScreenshot() {
-//   chrome.tabs.captureVisibleTab(function(screenshotUrl) {
-//     var viewTabUrl = chrome.extension.getURL('screenshot.html?id=' + screen_id++);
-//     // var targetId = null;
-//     window.localStorage.setItem("screenshotUrl",screenshotUrl);
-
-//     chrome.tabs.create({url: viewTabUrl});
-//   });
-// }
-
-
-
 // //  +++++++++++++++ EMAIL INVITE ++++++++++++
 
 // function sendMail() {
