@@ -149,7 +149,7 @@ panel.port.on("clicked", function(tabId){
 	} else {
 		tabId = tabId.substr(5);
 		console.log("update tabId:", tabId);
-		updateViroom(url, tabId);
+		updateViroom(tabs.activeTab.url, tabId);
 	}
 });
 
@@ -188,11 +188,14 @@ function handleToggleClick(state) {
 var pageMod = require("sdk/page-mod");
 var tabWorker = {};
 pageMod.PageMod({
-	include: "app.viroomie.com",
+	include: "*.viroomie.com",
 	contentScriptFile: ["./load_video_content_script.js"],
+	attachTo: ["existing", "top"],
 	onAttach: function(worker) {
+		console.log("attach worker", worker);
 		tabWorker[worker.tab.id] = worker;
 		worker.on('detach', function () {
+			console.log("DEtach worker", worker);
       delete tabWorker[worker.tab.id];
     });
   }
