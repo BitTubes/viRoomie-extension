@@ -208,7 +208,7 @@ tabs.on('pageshow', function(tab) {
 	} else {
 		console.log("pageshow no change necessary",tab);
 	}
-	toggleButton(tab.url);
+	// toggleButton(tab.url);
 });
 tabs.on('activate', function (tab) {
 	console.log('active: ', tabs.activeTab.url, "==", tab.url);
