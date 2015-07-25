@@ -80,7 +80,24 @@ function createSetIconAction(callback) {
 //     });
 //   });
 // }
-
+var embeddableYt = {};
+chrome.extension.onConnect.addListener(function(port) {
+  console.log("Connected .....");
+  port.onMessage.addListener(function(data) {
+    switch(data.a) {
+      case "getEmbeddableYt":
+        port.postMessage({
+          "a":"embeddableYt",
+          "id": data.id,
+          "val":embeddableYt[data.id]
+        });
+        break;
+      case "setEmbeddableYt":
+        embeddableYt[data.id] = data.val;
+        break;
+    }
+  });
+});
 
 // When the extension is installed or upgraded ...
 chrome.runtime.onInstalled.addListener(function() {

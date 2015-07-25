@@ -1,6 +1,9 @@
 /* jshint strict:false */
 
 var _ = chrome.i18n.getMessage;
+var p_updateapps;
+var p_openapp;
+var p_msg;
 
 //  +++++++++++++++ GOOGLE ANALYTICS ++++++++++++
 
@@ -50,6 +53,16 @@ function _getRoomFromHash(url) {
   }
   return false;
 }
+function _getYouTubeId(url) {
+  var uriFormats = ["/embed/","watch?v=","youtu.be/","youtube.com/v/"];
+  for (var i = 0; i < uriFormats.length; i++) {
+    if(url.indexOf(uriFormats[i])!=-1) {
+      return (url.split(uriFormats[i]))[1].substr(0,11);
+      // break;
+    }
+  }
+  return false;
+}
 
 
 function openViRoomie(url) {
@@ -78,7 +91,7 @@ function updateViroom(url, tabId, windowId) {
 }
 
 function findViRoomieTabs(url) {
-  var buttonWrapper = document.getElementById('updateapps');
+  var buttonWrapper = p_updateapps;
   buttonWrapper.setAttribute("data-msg", _("searching_rooms"));
 
   var queryInfo = {
@@ -99,7 +112,6 @@ function findViRoomieTabs(url) {
         _addElement(url, room, tab.id, tab.windowId);
       }
     }
-    // document.getElementById('msg').innerHTML = urls;
     if(roomCounter) {
       buttonWrapper.setAttribute("data-or", _("or"));
     } else {
@@ -153,9 +165,64 @@ function processUrl(url, viroomieCallback, externalCallback) {
     externalCallback(url);
   }
 }
+var embeddableYtCallback;
+var port = chrome.extension.connect({name: "Sample Communication"});
+// port.postMessage("Hi BackGround");
+port.onMessage.addListener(function(data) {
+  switch(data.a) {
+    case "embeddableYt":
+      embeddableYtCallback(data.id, data.val);
+      break;
+  }
+});
 
+
+function checkEmbedStatus(url, callback) {
+  var ytID = _getYouTubeId(url);
+  // console.log(embeddableYt[ytID]);
+  embeddableYtCallback = function(embeddableYt_ID, embeddableYt_Val) {
+    if(embeddableYt_ID!=ytID) {
+      return;
+    }
+    if("undefined" != typeof embeddableYt_Val) {
+      callback(embeddableYt_Val);
+      return;
+    }
+    var ApiKey = 'AIzaSyDVaU9_EkkYi7OZLCb2XANCLLO7zGfDjpA'; // API key for chrome extension; if you re-use this code, please change
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == XMLHttpRequest.DONE ) {
+        if(xhr.status == 200){
+          var data = JSON.parse(xhr.responseText);
+          try {
+            data = data["items"][0]["status"]["embeddable"];
+          } catch(e) {
+            data = false;
+          }
+          embeddableYt_Val = data;
+          callback(data);
+        }
+        else { // fallback - something went wrong with that api call hence we assume embeddable to be true
+          embeddableYt_Val = true;
+          callback(true);
+        }
+      }
+    };
+
+    xhr.open("GET", 'https://www.googleapis.com/youtube/v3/videos?part=status&id='+ytID+'&maxResults=1&fields=items(status%2Fembeddable)&key='+ApiKey, true);
+    xhr.send();
+  };
+  port.postMessage({
+    "a": "getEmbeddableYt",
+    "id": ytID
+  });
+
+}
 
 document.addEventListener('DOMContentLoaded', function() {
+  p_updateapps = document.getElementById('updateapps');
+  p_openapp = document.getElementById('openapp');
+  p_msg = document.getElementById('msg');
   // document.getElementById('options').onclick = function() {
   //   if (chrome.runtime.openOptionsPage) {
   //     // New way to open options pages, if supported (Chrome 42+).
@@ -165,10 +232,14 @@ document.addEventListener('DOMContentLoaded', function() {
   //     window.open(chrome.runtime.getURL('options.html'));
   //   }
   // };
+  function showTabs(url) {
+    p_openapp.innerHTML = _("open_new");
+    findViRoomieTabs(url);
+  }
   getCurrentTabUrl(function(url) {
     processUrl(url, function() { // inside viRoomie
 
-      // document.getElementById('msg').innerHTML = "app:"+url;
+      // p_msg.innerHTML = "app:"+url;
       // document.getElementById('app').style.display = "block";
 
       // document.getElementById('screenshot').onclick = makeScreenshot;
@@ -176,16 +247,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }, function(url) { // external website
       
-      if(url.indexOf("youtube.com/watch")>0 || url.indexOf("//nlv.bittubes.com")>=0) {
-        document.getElementById('openapp').innerHTML = _("open_new");
-        findViRoomieTabs(url);
+      if(url.indexOf("youtube.com/watch")>0) {
+        checkEmbedStatus(url,function(embeddable) {
+          if(embeddable) {
+            showTabs(url);
+          } else {
+            p_msg.innerHTML = _("embed_video_error");
+            p_updateapps.style.display = "none";
+            p_openapp.style.display = "none";
+          }
+        });
+      } else if(url.indexOf("//nlv.bittubes.com")>=0) {
+        showTabs(url);
       } else {
-        document.getElementById('msg').innerHTML = _("open_video_error");
-        document.getElementById('updateapps').style.display = "none";
-        document.getElementById('openapp').style.display = "none";
+        p_msg.innerHTML = _("open_video_error");
+        p_updateapps.style.display = "none";
+        p_openapp.style.display = "none";
       }
       document.getElementById('external').style.display = "block";
-      document.getElementById('openapp').onclick = openViRoomie.bind(null,url);
+      p_openapp.onclick = openViRoomie.bind(null,url);
     });
   });
 });

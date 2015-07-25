@@ -8,6 +8,9 @@
   "searching_rooms": {
     "message": "Suche nach offenen viRooms..."
   },
+  "loading": {
+    "message": "lade..."
+  },
   "open_new": {
     "message": "In neuem viRoom öffnen"
   },
@@ -24,5 +27,8 @@
   },
   "open_video_error": {
     "message": "Bitte ein Video wählen und dann hier erneut klicken"
+  },
+  "embed_video_error": {
+    "message": "Dieses Video wurde vom Autor als nicht teilbar (embed) definiert und kann daher nicht in viRoomie gezeigt werden"
   }
 }

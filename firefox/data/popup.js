@@ -59,7 +59,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	 p_updateapps.appendChild(newButton);
 	}
-
+	function onError(msg) {
+		p_updateapps.style.display = "none";
+		p_openapp.style.display = "none";
+		p_msg.textContent = _(msg);
+	}
 
 	function showButtons(data) {
 		for (var i = data.length - 1; i >= 0; i--) {
@@ -79,6 +83,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	addon.port.on("show", function onShow(data) {
 		console.log("show",data);
+		p_updateapps.style.display = "block";
+		p_openapp.style.display = "block";
 		p_updateapps.innerHTML = "";
 		showButtons(data);
 	});
@@ -86,12 +92,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		console.log("show1",data);
 		showButtons([data]);
 	});
-	addon.port.on("open_video_error", function onShow(data) {
-		console.log("show",data);
-		p_updateapps.style.display = "none";
-		p_openapp.style.display = "none";
-		p_msg.textContent = _("open_video_error");
-	});
+	addon.port.on("error", onError);
+	// addon.port.on("open_video_error", onError.bind(null,"open_video_error"));
+	// addon.port.on("embed_video_error", onError.bind(null,"embed_video_error"));
+	// addon.port.on("loading", onError.bind(null,"loading"));
 
 	addon.port.on("hide", function onHide(tabId) {
 		var node = document.getElementById('tabId'+tabId);

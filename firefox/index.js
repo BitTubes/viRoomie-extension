@@ -17,7 +17,9 @@ var tbuttons = require('sdk/ui/button/toggle');
 var tabs = require("sdk/tabs");
 var panels = require("sdk/panel");
 var pageMod = require("sdk/page-mod");
+var xhr = require("sdk/request").Request;
 
+var embeddableYt = {};
 var tabWorker = {};
 var roomTabIds = {};
 var roomCount = 0;
@@ -66,32 +68,90 @@ function _getRoomFromHash(url) {
 	}
 	return false;
 }
+function _getYouTubeId(url) {
+  var uriFormats = ["/embed/","watch?v=","youtu.be/","youtube.com/v/"];
+  for (var i = 0; i < uriFormats.length; i++) {
+    if(url.indexOf(uriFormats[i])!=-1) {
+      return (url.split(uriFormats[i]))[1].substr(0,11);
+      // break;
+    }
+  }
+  return false;
+}
+
+function checkEmbedStatus(url, callback) {
+  var ytID = _getYouTubeId(url);
+  if("undefined" != typeof embeddableYt[ytID]) {
+  	callback(embeddableYt[ytID]);
+  	return;
+  }
+  var ApiKey = 'AIzaSyDYrL9myfxlbrqXm7U6dbbjNlFwjNTD19A'; // API key for firefox extension; if you re-use this code, please change
+  xhr({
+  	url: 'https://www.googleapis.com/youtube/v3/videos?part=status&id='+ytID+'&maxResults=1&fields=items(status%2Fembeddable)&key='+ApiKey,
+  	onComplete:  function(response) {
+      if(response.status == 200){
+        var data = response.json;
+        try {
+          data = data["items"][0]["status"]["embeddable"];
+        } catch(e) {
+          data = false;
+        }
+        embeddableYt[ytID] = data;
+        callback(data);
+      }
+      else { // fallback - something went wrong with that api call hence we assume embeddable to be true
+        embeddableYt[ytID] = true;
+				callback(true);
+      }
+	  }
+  }).get();
+}
+
+function showTabs() {
+	var myTabs = [],
+		tab,
+		room;
+	roomCount = 0;
+	for (var i = tabs.length - 1; i >= 0; i--) {
+		tab = tabs[i];
+		room = _getRoomFromHash(tab.url);
+		if(room) {
+			roomCount++;
+			myTabs.push({"id": tab.id, "room": room});
+		}
+	}
+	panel.port.emit("show", myTabs);
+}
 function _handleToggleClick(state) {
 	console.log("_handleToggleClick",state);
 	if (state.checked) {
 		var url = tabs.activeTab.url.split("#")[0];
-		if(url.indexOf("youtube.com/watch")>0 || url.indexOf("//nlv.bittubes.com")>=0) {
-			var myTabs = [],
-				tab,
-				room;
-			roomCount = 0;
-			for (var i = tabs.length - 1; i >= 0; i--) {
-				tab = tabs[i];
-				room = _getRoomFromHash(tab.url);
-				if(room) {
-					roomCount++;
-					myTabs.push({"id": tab.id, "room": room});
+		if(url.indexOf("youtube.com/watch")>0) {
+			checkEmbedStatus(url, function(embeddable) {
+        if(embeddable) {
+					showTabs();
+				} else {
+					roomCount=1;
+					panel.port.emit("error", "embed_video_error");
 				}
-			}
-			panel.port.emit("show", myTabs);
+
+				_updatePanelHeight();
+				panel.show({
+					position: button
+				});
+			});
 		} else {
-			roomCount=0;
-			panel.port.emit("open_video_error");
+			if(url.indexOf("//nlv.bittubes.com")>=0) {
+				showTabs();
+			} else {
+				roomCount=0;
+				panel.port.emit("error","open_video_error");
+			}
+			_updatePanelHeight();
+			panel.show({
+				position: button
+			});
 		}
-		_updatePanelHeight();
-		panel.show({
-			position: button
-		});
 	}
 }
 
@@ -172,7 +232,9 @@ panel.port.on("loaded", function(){
 		"open_new": _("open_new"),
 		"open_in_existing": _("open_in_existing", "$1"),
 		"or": _("or"),
-		"open_video_error": _("open_video_error")
+		"loading": _("loading"),
+		"open_video_error": _("open_video_error"),
+		"embed_video_error": _("embed_video_error")
 	});
 });
 panel.port.on("clicked", function(tabId){

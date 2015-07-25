@@ -10,6 +10,9 @@
   "searching_rooms": {
     "message": "searching for open viRooms..."
   },
+  "loading": {
+    "message": "loading..."
+  },
   "open_new": {
     "message": "Open in new viRoom"
   },
@@ -26,5 +29,8 @@
   },
   "open_video_error": {
     "message": "Please select a video and then click here again"
+  },
+  "embed_video_error": {
+    "message": "Embedding is disabled for this video by the author and therefore it cannot be viewed in viRoomie"
   }
 }
