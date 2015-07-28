@@ -2,8 +2,7 @@
 ##Desktop##
 ###Chrome###
 JavaScript
-* Install:
-  * https://chrome.google.com/webstore/detail/viroomie/bgmhagomiggapbbelnliledgcdigceej
+* **Install: https://chrome.google.com/webstore/detail/viroomie/bgmhagomiggapbbelnliledgcdigceej**
 * dev-zone:
   * https://developer.chrome.com/extensions
 * publish:
@@ -11,8 +10,7 @@ JavaScript
 
 ###Firefox###
 JavaScript
-* Install:
-  * https://addons.mozilla.org/de/firefox/addon/viroomie/
+* **Install: https://addons.mozilla.org/de/firefox/addon/viroomie/**
 * dev-zone:
   * https://addons.mozilla.org/en-US/developers/
   * https://developer.mozilla.org/en-US/Add-ons
