@@ -21,8 +21,11 @@ chrome.runtime.onMessage.addListener(function(message, sender, callback) {
 		case "url":
 			var m = document.getElementById("m");
 			m.value = "/video "+message.url;
+			var b = document.getElementById("send");
+			if(b.click) {
+				b.click();
+			}
 			m.focus();
-			document.getElementById("m");
 			callback(true);
 		break;
 		default:

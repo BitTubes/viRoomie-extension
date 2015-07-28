@@ -17,27 +17,6 @@ _gaq.push(['_trackPageview']);
 
 
 
-function executeMailto(tab_id, subject, body, selection) {
-  var action_url = "mailto:?";
-  if (subject.length > 0) {
-    action_url += "subject=" + encodeURIComponent(subject) + "&";
-  }
-
-  if (body.length > 0) {
-    action_url += "body=" + encodeURIComponent(body);
-
-    // Append the current selection to the end of the text message.
-    if (selection.length > 0) {
-      action_url += encodeURIComponent("\n\n") +
-          encodeURIComponent(selection);
-    }
-  }
-
-  // Plain vanilla mailto links open up in the same tab to prevent
-  // blank tabs being left behind.
-  // console.log('Action url: ' + action_url);
-  chrome.tabs.update(tab_id, { url: action_url });
-}
 chrome.runtime.onConnect.addListener(function(port) {
   var tab = port.sender.tab;
 
@@ -101,7 +80,24 @@ function createSetIconAction(callback) {
 //     });
 //   });
 // }
-
+var embeddableYt = {};
+chrome.extension.onConnect.addListener(function(port) {
+  console.log("Connected .....");
+  port.onMessage.addListener(function(data) {
+    switch(data.a) {
+      case "getEmbeddableYt":
+        port.postMessage({
+          "a":"embeddableYt",
+          "id": data.id,
+          "val":embeddableYt[data.id]
+        });
+        break;
+      case "setEmbeddableYt":
+        embeddableYt[data.id] = data.val;
+        break;
+    }
+  });
+});
 
 // When the extension is installed or upgraded ...
 chrome.runtime.onInstalled.addListener(function() {
