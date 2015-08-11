@@ -94,5 +94,14 @@
       </div>
     </div>
 <!--     <button id="options">Options</button> -->
+<script src="ga_proxy.js"></script>
+<script>
+  var _gaq = new GaProxy("http://viroomie.com/ga_xdcom.html");
+  //Now, you can use the _gaq api as per normal, 
+  //and the requests will be proxied through to the iframe hosted on your server.        
+  _gaq.push(['_setAccount', 'UA-YOUR-ID'],["_setDomainName", "none"]);
+  _gaq.push(['_setAllowHash', false]);
+  _gaq.push(['_trackPageview', '/']);
+</script>
   </body>
 </html>
