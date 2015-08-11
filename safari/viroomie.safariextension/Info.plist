@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>BitTubes GmbH</string>
 	<key>Builder Version</key>
-	<string>10600.1.25.1</string>
+	<string>10600.7.12</string>
 	<key>CFBundleDisplayName</key>
 	<string>viroomie</string>
 	<key>CFBundleIdentifier</key>
@@ -28,6 +28,19 @@
 				<key>Filename</key>
 				<string>popup.html</string>
 				<key>Identifier</key>
+				<string>viroomiePopover</string>
+			</dict>
+		</array>
+		<key>Toolbar Items</key>
+		<array>
+			<dict>
+				<key>Identifier</key>
+				<string>viroomieButton</string>
+				<key>Image</key>
+				<string>img/icon16.png</string>
+				<key>Label</key>
+				<string>viRoomie</string>
+				<key>Popover</key>
 				<string>viroomiePopover</string>
 			</dict>
 		</array>
