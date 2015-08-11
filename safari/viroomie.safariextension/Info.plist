@@ -48,7 +48,16 @@
 	<key>Content</key>
 	<dict>
 		<key>Scripts</key>
-		<dict/>
+		<dict>
+			<key>End</key>
+			<array>
+				<string>load_video_content_script.js</string>
+			</array>
+		</dict>
+		<key>Whitelist</key>
+		<array>
+			<string>http://app.viroomie.com/*</string>
+		</array>
 	</dict>
 	<key>Description</key>
 	<string>viRoomie lets you view video content fully synchronized with anyone you like</string>
