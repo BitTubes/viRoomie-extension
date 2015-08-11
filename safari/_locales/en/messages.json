@@ -1,0 +1,36 @@
+{
+  "application_title": {
+    "message": "viRoomie",
+    "description": "The title of the application, displayed in the web store."
+  },
+  "application_description": {
+    "message": "Open viRooms directly from your supported video website like YouTube and share the viRoom you are in with friends.",
+    "description": "The description of the application, displayed in the web store."
+  },
+  "searching_rooms": {
+    "message": "searching for open viRooms..."
+  },
+  "loading": {
+    "message": "loading..."
+  },
+  "open_new": {
+    "message": "Open in new viRoom"
+  },
+  "open_in_existing": {
+    "message": "Open in #$room$",
+    "placeholders": {
+      "room": {
+        "content": "$1"
+      }
+    }
+  },
+  "or": {
+    "message": "or"
+  },
+  "open_video_error": {
+    "message": "Please select a video and then click here again"
+  },
+  "embed_video_error": {
+    "message": "Embedding is disabled for this video by the author and therefore it cannot be viewed in viRoomie"
+  }
+}

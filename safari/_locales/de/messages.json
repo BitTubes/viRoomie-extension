@@ -1,0 +1,34 @@
+{
+  "application_title": {
+    "message": "viRoomie"
+  },
+  "application_description": {
+    "message": "Öffne viRooms direkt von unterstützten Video Websites wie YouTube und teile deinen viRoom mit Freunden."
+  },
+  "searching_rooms": {
+    "message": "Suche nach offenen viRooms..."
+  },
+  "loading": {
+    "message": "lade..."
+  },
+  "open_new": {
+    "message": "In neuem viRoom öffnen"
+  },
+  "open_in_existing": {
+    "message": "In #$room$ öffnen",
+    "placeholders": {
+      "room": {
+        "content": "$1"
+      }
+    }
+  },
+  "or": {
+    "message": "oder"
+  },
+  "open_video_error": {
+    "message": "Bitte ein Video wählen und dann hier erneut klicken"
+  },
+  "embed_video_error": {
+    "message": "Dieses Video wurde vom Autor als nicht teilbar (embed) definiert und kann daher nicht in viRoomie gezeigt werden"
+  }
+}
