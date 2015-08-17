@@ -201,7 +201,6 @@ function findTabById(tabId) {
 	return false;
 }
 function updateViroom(url, tabId) {
-  // chrome.tabs.executeScript(tabId, {file: "load_video_content_script.js"});
   var tab = findTabById(tabId);
   if(!tab) {
   	return;
@@ -282,7 +281,7 @@ tabs.on('activate', function (tab) {
 
 pageMod.PageMod({
 	include: "*.viroomie.com",
-	contentScriptFile: ["./load_video_content_script.js"],
+	contentScriptFile: ["./content_script_viroomie.js"],
 	attachTo: ["existing", "top"],
 	onAttach: function(worker) {
 		console.log("attach worker", worker);

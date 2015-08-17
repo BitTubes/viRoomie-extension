@@ -69,7 +69,6 @@ function openViRoomie(url) {
   chrome.tabs.create( {url: "http://app.viroomie.com#video="+(url.split("=").join("%3D").split("&").join("%26"))} );
 }
 function updateViroom(url, tabId, windowId) {
-  // chrome.tabs.executeScript(tabId, {file: "load_video_content_script.js"});
   chrome.tabs.sendMessage(tabId, {"a":"url", "url":url}, function(data) {
     console.log("response from content-script: ",data);
     chrome.tabs.update(tabId, { // make tab active in its window
@@ -232,9 +231,13 @@ document.addEventListener('DOMContentLoaded', function() {
   //     window.open(chrome.runtime.getURL('options.html'));
   //   }
   // };
-  function showTabs(url) {
+  function showButtons(url, hideTabs) {
     p_openapp.innerHTML = _("open_new");
-    findViRoomieTabs(url);
+    if(!hideTabs) {
+      findViRoomieTabs(url);
+    } else {
+      p_updateapps.style.display = "none";
+    }
   }
   getCurrentTabUrl(function(url) {
     processUrl(url, function() { // inside viRoomie
@@ -250,15 +253,18 @@ document.addEventListener('DOMContentLoaded', function() {
       if(url.indexOf("youtube.com/watch")>0) {
         checkEmbedStatus(url,function(embeddable) {
           if(embeddable) {
-            showTabs(url);
+            showButtons(url);
           } else {
             p_msg.innerHTML = _("embed_video_error");
             p_updateapps.style.display = "none";
             p_openapp.style.display = "none";
           }
         });
+      } else if(url.indexOf("netflix.com/watch")>0) {
+        showButtons(url, true);
+        chrome.tabs.executeScript(null, {file: "content_script_netflix.js"});
       } else if(url.indexOf("//nlv.bittubes.com")>=0) {
-        showTabs(url);
+        showButtons(url);
       } else {
         p_msg.innerHTML = _("open_video_error");
         p_updateapps.style.display = "none";

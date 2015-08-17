@@ -133,6 +133,19 @@ chrome.runtime.onInstalled.addListener(function() {
           // And shows the extension's page action.
           actions: [ new chrome.declarativeContent.ShowPageAction() ]
         },
+         {
+          conditions: [
+            // That fires when a page's URL contains a 'chrome' ...
+            new chrome.declarativeContent.PageStateMatcher({
+              pageUrl: { 
+                // pathPrefix: '/watch',
+                hostEquals: 'www.netflix.com'
+              },
+            })
+          ],
+          // And shows the extension's page action.
+          actions: [ new chrome.declarativeContent.ShowPageAction() ]
+        },
         {
           conditions: [
             // That fires when a page's URL contains a 'chrome' ...
