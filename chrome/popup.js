@@ -65,9 +65,9 @@ function _getYouTubeId(url) {
 }
 
 
-function openViRoomie(url) {
+var openViRoomie = function(url) {
   chrome.tabs.create( {url: "http://app.viroomie.com#video="+(url.split("=").join("%3D").split("&").join("%26"))} );
-}
+};
 function updateViroom(url, tabId, windowId) {
   chrome.tabs.sendMessage(tabId, {"a":"url", "url":url}, function(data) {
     console.log("response from content-script: ",data);
@@ -150,7 +150,7 @@ function getCurrentTabUrl(callback) {
     // "url" properties.
     console.assert(typeof url == 'string', 'tab.url should be a string');
 
-    callback(url);
+    callback(url, currentTab.id);
   });
   // chrome.tabs.getCurrent(function(currentTab){
   //   callback(currentTab.url);
@@ -239,7 +239,36 @@ document.addEventListener('DOMContentLoaded', function() {
       p_updateapps.style.display = "none";
     }
   }
-  getCurrentTabUrl(function(url) {
+  function showNetflix(tabId) {
+    // p_openapp.innerHTML = _("open_new");
+    p_openapp.innerHTML = ":: Open viRoomie session";
+    p_updateapps.style.display = "none";
+    chrome.tabs.executeScript(null, {file: "content_script_netflix.js"});
+    openViRoomie = function(){
+      chrome.tabs.sendMessage(tabId, {"a":"init"}, function(data) {
+        console.log("response from content-script: ",data);
+        if(data=="started") {
+          window.close();
+        }
+        // chrome.tabs.update(tabId, { // make tab active in its window
+        //   active:true
+        // }, function() {
+        //   if (chrome.runtime.lastError) {
+        //       console.log(chrome.runtime.lastError.message);
+        //       var button = document.getElementById("tabId"+tabId);
+        //       button.parentNode.removeChild(button);
+        //   } else {
+        //     chrome.windows.update(windowId, { // make tab's window active
+        //       drawAttention:true, // blink
+        //       focused:true // bring window to front
+        //     }, function() {});
+        //     window.close();
+        //   }
+        // });
+      });
+    };
+  }
+  getCurrentTabUrl(function(url, tabId) {
     processUrl(url, function() { // inside viRoomie
 
       // p_msg.innerHTML = "app:"+url;
@@ -261,8 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         });
       } else if(url.indexOf("netflix.com/watch")>0) {
-        showButtons(url, true);
-        chrome.tabs.executeScript(null, {file: "content_script_netflix.js"});
+        showNetflix(tabId);
       } else if(url.indexOf("//nlv.bittubes.com")>=0) {
         showButtons(url);
       } else {
