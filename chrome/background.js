@@ -31,6 +31,15 @@ chrome.runtime.onConnect.addListener(function(port) {
   });
 });
 
+var manifestData = chrome.runtime.getManifest();
+// console.log(manifestData);
+chrome.runtime.onMessageExternal.addListener( function(request, sender, sendResponse) {
+  // console.info("test");
+  if (request && request.message == "version") {
+    sendResponse({version: manifestData.version});
+  }
+  return true;
+});
 
 
 var path19 = "img/icon19_share.png";

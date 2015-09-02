@@ -36,6 +36,12 @@
       "js": ["content_script_viroomie.js"]
     }
   ],
+  "externally_connectable": {
+    "matches": [
+      "*://app.viroomie.com/*",
+      "http://www.netflix.com/watch/*"
+    ]
+  },
   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
   "permissions" : [
     "activeTab",
