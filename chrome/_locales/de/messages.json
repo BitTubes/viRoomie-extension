@@ -30,5 +30,8 @@
   },
   "embed_video_error": {
     "message": "Dieses Video wurde vom Autor als nicht teilbar (embed) definiert und kann daher nicht in viRoomie gezeigt werden"
+  },
+  "already_loaded": {
+    "message": "Player ist schon geladen"
   }
 }
