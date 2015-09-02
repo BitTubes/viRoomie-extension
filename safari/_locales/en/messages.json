@@ -32,8 +32,5 @@
   },
   "embed_video_error": {
     "message": "Embedding is disabled for this video by the author and therefore it cannot be viewed in viRoomie"
-  },
-  "already_loaded": {
-    "message": "Player already loaded"
   }
 }

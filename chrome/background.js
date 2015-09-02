@@ -31,6 +31,15 @@ chrome.runtime.onConnect.addListener(function(port) {
   });
 });
 
+var manifestData = chrome.runtime.getManifest();
+// console.log(manifestData);
+chrome.runtime.onMessageExternal.addListener( function(request, sender, sendResponse) {
+  // console.info("test");
+  if (request && request.message == "version") {
+    sendResponse({version: manifestData.version});
+  }
+  return true;
+});
 
 
 var path19 = "img/icon19_share.png";
@@ -127,6 +136,19 @@ chrome.runtime.onInstalled.addListener(function() {
               pageUrl: { 
                 hostEquals: 'www.youtube.com'//,
                 // pathPrefix: '/watch'
+              },
+            })
+          ],
+          // And shows the extension's page action.
+          actions: [ new chrome.declarativeContent.ShowPageAction() ]
+        },
+         {
+          conditions: [
+            // That fires when a page's URL contains a 'chrome' ...
+            new chrome.declarativeContent.PageStateMatcher({
+              pageUrl: { 
+                // pathPrefix: '/watch',
+                hostEquals: 'www.netflix.com'
               },
             })
           ],
