@@ -1,0 +1,143 @@
+.viroomie_rejoin {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: none;
+	z-index: 1;
+	background-color: rgba(255, 255, 255, 0.6);
+}
+.viroomie_rejoin * {
+	color: #fff;
+	font-family: 'Source Sans Pro', sans-serif;
+	font-size: 20px;
+}
+.viroomie_rejoin > div {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	min-width: 350px;
+	min-height: 1em;
+	display: block;
+	-webkit-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	z-index: 1;
+	font-size: 20px;
+	border: 2px solid #fff;
+	background-color: #000;
+	padding: 0.5em 0.5em;
+	box-shadow: 0 0 70px 0 #000;
+}
+.viroomie_rejoin > div::before {
+	content: "~ viRoomie ~";
+	display: block;
+	color: #fff;
+	font-size: 40px;
+	text-align: center;
+	font-family: 'Poiret One', cursive;
+}
+.viroomie_hr,
+.viroomie_rejoin > div > hr {
+	height: 2px;
+	border: 0;
+	background-color: #fff;
+}
+.viroomie_hr {
+	margin: 20px 0 0 0;
+}
+.viroomie_cancel,
+.viroomie_rejoin > div > button {
+	white-space:nowrap;
+	width:100%;
+	padding: 1em 2em;
+	background-color: #000;
+	border: 0;
+	outline: 0;
+}
+.viroomie_cancel:hover,
+.viroomie_rejoin > div > button:hover {
+	font-weight: bold;
+}
+
+.viroomie_join::before {
+	content: "Open in ";
+}
+.viroomie_cancel::before {
+	content: "Cancel";
+}
+
+.lang_de .viroomie_join::before {
+	content: "In ";
+}
+.lang_de .viroomie_join::after {
+	content: " öffnen";
+}
+.lang_de .viroomie_cancel::before {
+	content: "Abbrechen";
+}
+
+/* netflix only */
+.viroomie-loaded >.online .player-back-to-browsing {
+	display: none !important;
+}
+
+
+/* maxdome only */
+.viroomie_rejoin_md .col--cta.has-tooltip-list {
+	float: none;
+	position: absolute;
+	left: 50%;
+}
+.viroomie_rejoin_md .module-t8 .col--cta::before {
+	content: "";
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-color: rgba(255, 255, 255, 0.6);
+}
+.viroomie_rejoin_md .module-t8 .col--cta ul {
+	left: -150px;
+	top: 100px;
+	overflow: visible;
+	-webkit-transition: -webkit-transform 0.5s cubic-bezier(0.35, -2, 0.65, 3);
+	transition: transform 0.5s cubic-bezier(0.35, -2, 0.65, 3);
+	-webkit-transform: scale(1.1);
+	transform: scale(1.1);
+}
+.viroomie_rejoin_md .col--cta li {
+	border:3px solid white;
+	background: #000;
+	padding: 1em;
+	box-shadow: 0 0 70px 0 #000;
+}
+.viroomie_rejoin_md .col--cta li::before {
+	content: "~ viRoomie ~ starten";
+	font-size: 20px;
+	padding: 1em 2em;
+	text-align: center;
+	display: block;
+}
+/*.viroomie_rejoin_md .col--cta li::after {
+	content: "Bitte oben klicken";
+	font-size: 20px;
+	padding: 1em 2em;
+	text-align: center;
+	display: block;
+}
+*/
+.viroomie_rejoin_md a.btn-cta.arrow.package.trackable {
+	/*width: 100%;*/
+	margin: 0 auto;
+}
+.viroomie_rejoin_md .viroomie_cancel {
+	/*display: block !important;*/
+	font-size: 20px;
+	color: #fff;
+}
+/*.viroomie_rejoin_md .viroomie_hr {
+	display: block !important;
+}
+*/

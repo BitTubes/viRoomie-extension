@@ -315,6 +315,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         return;
         // chrome.tabs.sendMessage(tabId, {"a":"running"});
+      } else if(url.indexOf("maxdome.de/webplayer")>0) {
+        chrome.tabs.sendMessage(tabId, {"a":"running", "tabId":tabId, "url":url}, function(data){
+          console.log("cb-data",data);
+          runningNetflixCB(data);
+        });
+        return;
+        // chrome.tabs.sendMessage(tabId, {"a":"running"});
       } else if(url.indexOf("//nlv.bittubes.com")>=0) {
         showButtons(url);
       } else {

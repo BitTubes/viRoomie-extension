@@ -1,3 +1,5 @@
+"use strict";
+
 var baseDir = "http://app.viroomie.com/";
 var scripts = [
 	baseDir + 'js/lib/jquery-2.1.4.min.js',
@@ -5,13 +7,41 @@ var scripts = [
 	baseDir + 'js/lib/notification-1.0.0.min.js',
 	baseDir + 'js/lib/intro-1.0.1.min.js',
 	baseDir + 'js/lib/socket.io-1.3.5.min.js',
-	baseDir + 'js/lib/loader-netflix-1.0.0.min.js'
+	baseDir + 'js/lib/loader-external-1.0.0.min.js'
 	// baseDir + 'js/client.min.js'
 ];
 var styles = [
 	'//fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Poiret+One',
 	baseDir + 'css/style.css'
 ];
+var EXTERNAL = {
+	'www.netflix.com/watch': {
+		'v' : 'nf',
+		'p_playpause' : '.player-play-pause',
+		'p_video' : 'video'
+	},
+	'play.maxdome.de': {
+		'v' : 'md',
+		'p_playpause' : '#player-controls--play-toggle',
+		'p_video' : '#videoPlayer'
+	},
+	'www.maxdome.de': {
+		'v' : 'md_pre',
+		'pre' : true
+	}
+};
+
+for(var el in EXTERNAL) {
+	if(location.href.indexOf(el) !== -1) {
+		EXTERNAL[el]['url'] = el;
+		EXTERNAL = EXTERNAL[el];
+		break;
+	}
+}
+if(EXTERNAL['pre']) {
+	EXTERNAL['url'] = null;
+}
+
 function $0(selector, base) {
 	return $1(selector, base)[0];
 }
@@ -57,13 +87,8 @@ function addScript(urls, fn) {
 				}
 				// Handle memory leak in IE
 				script.onload = script.onreadystatechange = null;
-				// if ( head && script.parentNode ) {
-				// 	head.removeChild( script );
-				// }
 			}
 		};			
-	// } else {
-	// 	$0("html").classList.add("viroomie-loaded");
 	}
 	script.type = 'text/javascript';
 	script.src = url;
@@ -77,29 +102,24 @@ function addStyle(url) {
 }
 function addIncludes() {
 	// console.log("addIncludes", fn);
-	var i;
-	for (i = 0; i < styles.length; i++) {
+	for(var i = 0; i < styles.length; i++) {
 		addStyle(styles[i]);
 	}
-	// for (i = 0; i < scripts.length; i++) {
-	// 	addScript(scripts[i]);
-	// }
+	testForExternalJquery();
 	addScript(scripts);
 }
-function _getDataFromHash(url) {
+function _getRoomFromHash(url) {
 	if(url.indexOf("#")>=0) {
-		var room=false,
-			hashvar,
+		var hashvar,
 			hashvars = url.split("#")[1].split("&");
-		// console.info(hashvars);
 		for (var i = hashvars.length - 1; i >= 0; i--) {
 			hashvar = hashvars[i].split("=");
 			if(hashvar[0] == "room") {
-				room = hashvar[1];
+				return hashvar[1];
 			}
 		}
 	}
-	return [room];
+	return false;
 }
 function init(room) {
 	// console.error("init",room);
@@ -114,17 +134,27 @@ function init(room) {
 	var startViroomie = $0('#startViroomie');
 	if(!startViroomie) {
 		console.log("start bt 404");
-		addScript([baseDir + 'js/lib/loader-netflix-1.0.0.min.js?'+Date.now()], init.bind(this,room));
-		// window.setTimeout(init.bind(this,room),500);
+		addScript([baseDir + 'js/lib/loader-external-1.0.0.min.js?'+Date.now()], init.bind(null,room));
 		return;
 	}
 	startViroomie.setAttribute("data-room", room);
 	triggerClick(startViroomie);
-	var video = $0('video');
+	var video = $0(EXTERNAL['p_video']);
 	if(video) {
 		if(!video.paused) {
-			$0('.player-play-pause').click();
+			$0(EXTERNAL['p_playpause']).click();
 			// video.pause();
+		}
+	}
+}
+function testForExternalJquery() {
+	var test = $1('script');
+	for (var i = test.length - 1; i >= 0; i--) {
+		if(test[i].src && test[i].src.indexOf('jquery') !==-1) {
+			if(scripts[0].indexOf("jquery")!==-1) {
+				scripts.splice(0,1);
+				break;
+			}
 		}
 	}
 }
@@ -135,23 +165,41 @@ function loadFiles() {
 	}
 }
 function rejoin(vroom) {
-	if((!!window["netflix"] && !!window["netflix"]["cadmium"] && !!window["netflix"]["cadmium"]["objects"] && !!window["netflix"]["cadmium"]["objects"]["videoPlayer"]) || !$1('video').length) {
-		console.log("retry in 100ms");
-		window.setTimeout(rejoin.bind(null, vroom),100);
-		return;
-	}
-	console.error($1('video').length);
-	var video = $0('video');
-	var initialPause = function(){
-		if(video.paused===false) {
-			// $0('.player-play-pause').click();
-			video.pause();
-			setTimeout(function() {
-				video.removeEventListener("timeupdate",initialPause, false);
-			},5000);
+	console.log("rejoin()");
+	switch(EXTERNAL['v']) {
+	case 'nf':
+		if(!!window["netflix"] && !!window["netflix"]["cadmium"] && !!window["netflix"]["cadmium"]["objects"] && !!window["netflix"]["cadmium"]["objects"]["videoPlayer"]) {
+			// console.log("retry in 100ms");
+			window.setTimeout(rejoin.bind(null, vroom),100);
+			return;
+		} else {
+			var video = $0(EXTERNAL['p_video']);
+			var initialPause = function(){
+				video.pause();
+				setTimeout(function() {
+					video.removeEventListener("timeupdate",initialPause, false);
+				},5000);
+			};
+			video.addEventListener("timeupdate", initialPause, false);
 		}
-	};
-	video.addEventListener("timeupdate", initialPause, false);
+		break;
+	case 'md':
+		if(!$1(EXTERNAL['p_video']).length) {
+			// console.log("retry in 100ms");
+			window.setTimeout(rejoin.bind(null, vroom),100);
+			return;
+		} else {
+			var video = $0(EXTERNAL['p_video']);
+			var initialPause = function(){
+				video.pause();
+				setTimeout(function() {
+					video.removeEventListener("timeupdate",initialPause, false);
+				},2000);
+			};
+			video.addEventListener("timeupdate", initialPause, false);
+		}
+	}
+
 
 	var body = $0("body") || document.documentElement;
 	var info = document.createElement('div');
@@ -166,7 +214,7 @@ function rejoin(vroom) {
 		event.stopPropagation();
 		info = $0('.viroomie_rejoin');
 		info.parentNode.removeChild(info);
-	};
+	}
 	info.onclick = cancel;
 	$0('.viroomie_cancel').onclick = cancel;
 
@@ -176,7 +224,6 @@ function rejoin(vroom) {
 	}
 
 }
-// if(!$0('html').classList.contains("viroomie-loaded")) {
 if(!window["viroomieListener"]) {
 	window["viroomieListener"] = true;
 	chrome.runtime.onMessage.addListener(function(message, sender, callback) {
@@ -184,7 +231,7 @@ if(!window["viroomieListener"]) {
 		// console.log("jQuery",$);
 		switch(message.a) {
 			case "init":
-				if($0("#viroomieNetflixWrap") && $0("body.online")) {
+				if($0("#viroomieExternalWrap") && $0("body.online")) {
 					return;
 				}
 				if(!$0('html').classList.contains("viroomie-loaded")) {
@@ -197,14 +244,14 @@ if(!window["viroomieListener"]) {
 				callback("started");
 				break;
 			case "load":
-				if($0("#viroomieNetflixWrap")) {
+				if($0("#viroomieExternalWrap")) {
 					return;
 				}
 				loadFiles();
 				break;
 			case "running":
 				var cb_value = {
-					"a": $0("#viroomieNetflixWrap") && $0("body.online") ? "nf200" : "nf400",
+					"a": $0("#viroomieExternalWrap") && $0("body.online") ? "nf200" : "nf400",
 					tabId : message.tabId,
 					url : message.url
 				};
@@ -218,12 +265,45 @@ if(!window["viroomieListener"]) {
 		}
 
 	});
-	if(!$0("#viroomieNetflixWrap") && location.href.indexOf("netflix.com/watch/")!==-1) {
-		var hashvars = _getDataFromHash(location.hash);
-		// console.log("hashvars:",hashvars);
-		if(hashvars[0]) {
-			rejoin(hashvars[0]);
+	var hashRoom = _getRoomFromHash(location.href);
+	if(hashRoom){
+		console.log("set",hashRoom);
+		chrome.runtime.sendMessage({"a": "setRoom", "room":hashRoom} );
+		if(!$0("#viroomieExternalWrap") && location.href.indexOf(EXTERNAL['url'])!==-1) {
+			rejoin(hashRoom);
+		} else {
+			console.log("other",EXTERNAL['v']);
+			if(EXTERNAL['v']=='md_pre') {
+				var container = $0(".col--cta.has-tooltip-list li");
+				var hr = document.createElement('hr');
+				hr.className = 'viroomie_hr';
+				var button = document.createElement('button');
+				button.className = "viroomie_cancel";
+				// button.style.display="none";
+				button.onclick = function() {
+					document.body.classList.remove("viroomie_rejoin_md");
+					button.parentNode.removeChild(button);
+					hr.parentNode.removeChild(hr);
+					chrome.runtime.sendMessage({"a": "setRoom", "room":""} );
+				};
+				container.appendChild(hr);
+				container.appendChild(button);
+
+				document.body.classList.add("viroomie_rejoin_md");
+				document.body.classList.add("lang_de");
+			}
 		}
+	} else {
+		chrome.runtime.sendMessage({"a": "getRoom"}, function(response) {
+			console.log("get",response["room"]);
+			hashRoom = response["room"];
+			if(hashRoom) {
+				location.hash = "#room="+hashRoom;
+				if(!$0("#viroomieExternalWrap") && location.href.indexOf(EXTERNAL['url'])!==-1) {
+					rejoin(hashRoom);
+				}
+			}
+		});
 	}
 }
-console.info("content_script_netflix loaded");
+console.info("content_script_external loaded");

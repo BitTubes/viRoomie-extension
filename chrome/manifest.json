@@ -3,7 +3,7 @@
 
   "name": "__MSG_application_title__",
   "description": "__MSG_application_description__",
-  "version": "1.3.3",
+  "version": "1.4.2",
   "default_locale": "en",
   "icons": {
     "16": "img/icon16.png",
@@ -30,7 +30,12 @@
     {
       "matches": ["http://www.netflix.com/*"],
       "js": ["content_script_netflix.js"],
-      "css": ["content_script_netflix.css"]
+      "css": ["content_script_external.css"]
+    },
+    {
+      "matches": ["*://*.maxdome.de/*"],
+      "js": ["content_script_external.js"],
+      "css": ["content_script_external.css"]
     },
     {
       "matches": ["http://app.viroomie.com/*"],
@@ -39,8 +44,9 @@
   ],
   "externally_connectable": {
     "matches": [
-      "*://app.viroomie.com/*",
-      "http://www.netflix.com/watch/*"
+      "http://www.netflix.com/watch/*",
+      "http://play.maxdome.de/webplayer/*",
+      "*://app.viroomie.com/*"
     ]
   },
   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
@@ -49,6 +55,7 @@
     "declarativeContent",
     "tabs",
     "http://www.netflix.com/*",
+    "*://*.maxdome.de/*",
     "*://app.viroomie.com/*"
   ]
 }
