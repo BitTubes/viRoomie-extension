@@ -31,7 +31,31 @@ chrome.runtime.onConnect.addListener(function(port) {
   });
 });
 
-
+var manifestData = chrome.runtime.getManifest();
+// console.log(manifestData);
+chrome.runtime.onMessageExternal.addListener( function(request, sender, sendResponse) {
+  // console.info("test");
+  if (request && request.message == "version") {
+    sendResponse({version: manifestData.version});
+  }
+  return true;
+});
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    console.log(sender.tab ?
+                "from a content script:" + sender.tab.url :
+                "from the extension");
+    if (request) {
+      switch(request.a) {
+      case "setRoom":
+        localStorage.setItem("viroomie-room",request.room);
+        break;
+      case "getRoom":
+        sendResponse({room: localStorage.getItem("viroomie-room")});
+        break;
+      }
+    }
+  });
 
 var path19 = "img/icon19_share.png";
 // var path38 = "img/icon19_share.png";
@@ -127,6 +151,32 @@ chrome.runtime.onInstalled.addListener(function() {
               pageUrl: { 
                 hostEquals: 'www.youtube.com'//,
                 // pathPrefix: '/watch'
+              },
+            })
+          ],
+          // And shows the extension's page action.
+          actions: [ new chrome.declarativeContent.ShowPageAction() ]
+        },
+        {
+          conditions: [
+            // That fires when a page's URL contains a 'chrome' ...
+            new chrome.declarativeContent.PageStateMatcher({
+              pageUrl: { 
+                // pathPrefix: '/watch',
+                hostEquals: 'www.netflix.com'
+              },
+            })
+          ],
+          // And shows the extension's page action.
+          actions: [ new chrome.declarativeContent.ShowPageAction() ]
+        },
+        {
+          conditions: [
+            // That fires when a page's URL contains a 'chrome' ...
+            new chrome.declarativeContent.PageStateMatcher({
+              pageUrl: { 
+                pathPrefix: '/webplayer/',
+                hostEquals: 'play.maxdome.de'
               },
             })
           ],

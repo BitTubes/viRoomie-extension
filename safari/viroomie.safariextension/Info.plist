@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Author</key>
+	<string>BitTubes GmbH</string>
+	<key>Builder Version</key>
+	<string>10600.7.12</string>
+	<key>CFBundleDisplayName</key>
+	<string>viroomie</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.bittubes.safari.viroomie</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1.0.0</string>
+	<key>Chrome</key>
+	<dict>
+		<key>Database Quota</key>
+		<real>1048576</real>
+		<key>Global Page</key>
+		<string>global.html</string>
+		<key>Popovers</key>
+		<array>
+			<dict>
+				<key>Filename</key>
+				<string>popup.html</string>
+				<key>Identifier</key>
+				<string>viroomiePopover</string>
+			</dict>
+		</array>
+		<key>Toolbar Items</key>
+		<array>
+			<dict>
+				<key>Identifier</key>
+				<string>viroomieButton</string>
+				<key>Image</key>
+				<string>img/icon16.png</string>
+				<key>Label</key>
+				<string>viRoomie</string>
+				<key>Popover</key>
+				<string>viroomiePopover</string>
+			</dict>
+		</array>
+	</dict>
+	<key>Content</key>
+	<dict>
+		<key>Scripts</key>
+		<dict>
+			<key>End</key>
+			<array>
+				<string>load_video_content_script.js</string>
+			</array>
+		</dict>
+		<key>Whitelist</key>
+		<array>
+			<string>http://app.viroomie.com/*</string>
+		</array>
+	</dict>
+	<key>Description</key>
+	<string>viRoomie lets you view video content fully synchronized with anyone you like</string>
+	<key>DeveloperIdentifier</key>
+	<string>CTGK5575ZU</string>
+	<key>ExtensionInfoDictionaryVersion</key>
+	<string>1.0</string>
+	<key>Permissions</key>
+	<dict>
+		<key>Website Access</key>
+		<dict>
+			<key>Allowed Domains</key>
+			<array>
+				<string>app.viroomie.com</string>
+			</array>
+			<key>Include Secure Pages</key>
+			<true/>
+			<key>Level</key>
+			<string>Some</string>
+		</dict>
+	</dict>
+	<key>Update Manifest URL</key>
+	<string>http://viroomie.com/update/safari.plist</string>
+	<key>Website</key>
+	<string>http://viroomie.com</string>
+</dict>
+</plist>

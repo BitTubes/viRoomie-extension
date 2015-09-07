@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>xdcom</title>
+    
+    <script type="text/javascript">
+      
+      var _gaq = _gaq || [];
+      var ga = document.createElement('script'); 
+      ga.type = 'text/javascript';
+      ga.src = "https://ssl.google-analytics.com/ga.js"
+      var s = document.getElementsByTagName('script')[0]; 
+      s.parentNode.insertBefore(ga, s);
+      
+      // because debugging inside a FF addon sucks.
+      var console = {
+        log: function(msg) {
+          var div = document.getElementById("log");
+          div.style.display = "block";
+          var content = div.innerHTML + "<hr />";
+          var type = typeof msg;
+          if (type != "string") {
+            msg = JSON.stringify(msg);
+          }
+          content += type + ": '" + msg + "'";
+          div.innerHTML = content;
+        }
+      };
+      
+      window.addEventListener("load", function() {
+
+        window.addEventListener("message", function(event) {
+          // edit this line to use your add-on ID, found in package.json
+          if (event.origin == "resource://636332") {
+            var data = JSON.parse(event.data);
+            for (var i = 0; i < data.length; i++) {
+              var row = data[i];
+              for(key in row) {
+                var args = row[key];
+                _gaq.push(args);
+              }
+            }
+          }
+        }, false);
+
+      });
+      
+    </script>
+
+    
+    <style>
+      body, div {
+        font-size: 10px;
+      }
+    </style>
+  
+  </head>
+  
+  <body>
+
+    <div id="log"></div>
+
+  </body>
