@@ -3,7 +3,7 @@
 
   "name": "__MSG_application_title__",
   "description": "__MSG_application_description__",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "default_locale": "en",
   "icons": {
     "16": "img/icon16.png",
@@ -28,12 +28,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["http://www.netflix.com/*"],
-      "js": ["content_script_netflix.js"],
-      "css": ["content_script_external.css"]
-    },
-    {
-      "matches": ["*://*.maxdome.de/*"],
+      "matches": [
+        "http://www.netflix.com/*",
+        "*://*.maxdome.de/*"
+      ],
       "js": ["content_script_external.js"],
       "css": ["content_script_external.css"]
     },

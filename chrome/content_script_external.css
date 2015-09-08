@@ -29,6 +29,22 @@
 	padding: 0.5em 0.5em;
 	box-shadow: 0 0 70px 0 #000;
 }
+.viroomie_rejoin input {
+	border: 0;
+	/*border-bottom: 2px solid #fff;*/
+	padding-bottom: 0.3em;
+	text-align: center;
+	display:inline-block;
+	width: 100%;
+	font-size: 26px;
+	letter-spacing: 3px;
+
+	background-color: rgba(255,255,255,0.1);
+}
+.viroomie_rejoin input:focus {
+    background-color: rgba(255, 255, 255, 0.3);
+    outline: 0;
+}
 .viroomie_rejoin > div::before {
 	content: "~ viRoomie ~";
 	display: block;
