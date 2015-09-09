@@ -218,7 +218,7 @@ function checkEmbedStatus(url, callback) {
   });
 
 }
-function runningNetflixCB(data) {
+function initExternalPlayer(data) {
   // console.log("response from content-script: ",data);
   if(data.a=="nf200") {
     p_msg.innerHTML = _("already_loaded");
@@ -226,10 +226,10 @@ function runningNetflixCB(data) {
     p_updateapps.style.display = "none";
     p_openapp.style.display = "none";
   } else {
-    showNetflix(data.tabId, data.url);
+    showExternalPlayer(data.tabId, data.url);
   }
 }
-function showNetflix(tabId, url) {
+function showExternalPlayer(tabId, url) {
   openViRoomie = function(){
     var room = this.getAttribute("data-room") || "";
     chrome.tabs.sendMessage(tabId, {"a":"init", "room": room}, function(data) {
@@ -239,21 +239,15 @@ function showNetflix(tabId, url) {
       }
     });
   };
-  chrome.tabs.sendMessage(tabId, {"a":"load",}, function(data) {
-    // console.log("response from content-script: ",data);
-  });
-  // chrome.tabs.executeScript(null, {file: "content_script_netflix.js"});
+  chrome.tabs.sendMessage(tabId, {"a":"load",}, function() {});
 
   p_openapp.innerHTML = _("open_new");
-  // p_openapp.innerHTML = "New viRoomie session";
   p_openapp.setAttribute("data-room","");
   var room = _getRoomFromHash(url);
   if(room) {
     var newButton = document.createElement("button"); 
     var newContent = document.createTextNode(_("open_in_existing", [room]));
     newButton.setAttribute("data-room", room);
-    // newButton.setAttribute("id", "tabId"+tabId);
-    // newButton.onclick = updateViroom.bind(null,url, tabId, windowId);
     newButton.onclick = openViRoomie.bind(newButton);
     newButton.appendChild(newContent); //add the text node to the newly created div. 
 
@@ -311,14 +305,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       } else if(url.indexOf("netflix.com/watch")>0) {
         chrome.tabs.sendMessage(tabId, {"a":"running", "tabId":tabId, "url":url}, function(data){
-          runningNetflixCB(data);
+          initExternalPlayer(data);
         });
         return;
         // chrome.tabs.sendMessage(tabId, {"a":"running"});
       } else if(url.indexOf("maxdome.de/webplayer")>0) {
         chrome.tabs.sendMessage(tabId, {"a":"running", "tabId":tabId, "url":url}, function(data){
           console.log("cb-data",data);
-          runningNetflixCB(data);
+          initExternalPlayer(data);
         });
         return;
         // chrome.tabs.sendMessage(tabId, {"a":"running"});

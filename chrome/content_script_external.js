@@ -117,8 +117,10 @@ function addIncludes() {
 	for(var i = 0; i < styles.length; i++) {
 		addStyle(styles[i]);
 	}
-	testForExternalJquery();
-	addScript(scripts);
+	if(scripts.length) {
+		testForExternalJquery();
+		addScript(scripts);
+	}
 }
 function _getRoomFromHash(url) {
 	if(url.indexOf("#")>=0) {
@@ -176,13 +178,26 @@ function loadFiles() {
 		return;
 	}
 }
-function rejoin(vroom) {
-	// console.log("rejoin()");
+var specialChar = {
+	regexp : /[^a-z0-9+\.\[\]\(\)~|!§$%&{}ßäöü_-]/gi,
+	filter : function() {
+		var txt = this.value;
+
+		if ( txt.match(specialChar.regexp) ){
+			this.value = txt.replace(specialChar.regexp, '');
+		}
+	}
+};
+function join(rejoin, vroom) {
+	console.log("join",rejoin, vroom);
+	if($1(".viroomie_rejoin").length) { // in case we pressed the popup-button before...
+		return;
+	}
 	switch(EXTERNAL.v) {
 	case 'nf':
-		if((!!window["netflix"] && !!window["netflix"]["cadmium"] && !!window["netflix"]["cadmium"]["objects"] && !!window["netflix"]["cadmium"]["objects"]["videoPlayer"]) || !$1('video').length) {
+		if((!!window["netflix"] && !!window["netflix"]["cadmium"] && !!window["netflix"]["cadmium"]["objects"] && !!window["netflix"]["cadmium"]["objects"]["videoPlayer"]) || !$1('video').length) {	
 			// console.log("retry in 100ms");
-			window.setTimeout(rejoin.bind(null, vroom),100);
+			window.setTimeout(join.bind(null, rejoin, vroom),100);
 			return;
 		}
 		var resetPlayBtn = function() { // pausing the video manually will leave netflix's JS and UI in the wrong state
@@ -198,7 +213,7 @@ function rejoin(vroom) {
 	case 'md':
 		if(!$1(EXTERNAL.p_video).length) {
 			// console.log("retry in 100ms");
-			window.setTimeout(rejoin.bind(null, vroom),100);
+			window.setTimeout(join.bind(null, rejoin, vroom),100);
 			return;
 		}
 	}
@@ -215,14 +230,19 @@ function rejoin(vroom) {
 	var body = $0("body") || document.documentElement;
 	var p_rejoin = document.createElement('div');
 	p_rejoin.classList.add('viroomie_rejoin');
-	p_rejoin.innerHTML = '<div><input class="viroomie_usernameInput" type="text" maxlength="20" placeholder="My Name" autofocus><br><button class="viroomie_join">#'+vroom+'</button><hr><button class="viroomie_cancel"></button></div>';
+	p_rejoin.innerHTML = '<div><input class="viroomie_usernameInput" type="text" maxlength="20" placeholder="My Name" autofocus><br><button class="viroomie_join" '+ (vroom?'data-room="'+vroom+'"':'') +'></button><hr><button class="viroomie_cancel"></button></div>';
 	body.appendChild(p_rejoin);
 	$0('.viroomie_join').onclick = function() {
 		event.stopPropagation();
 		init(vroom);
 		p_rejoin.style.display = "none";
 	};
+	if(!rejoin) {
+		addScript([EXTERNAL.loader+'?'+Date.now()]);
+		p_rejoin.style.display = "block";
+	}
 	var input = $0('.viroomie_usernameInput');
+	input.onkeyup = specialChar.filter;
 	input.onclick = function() {
 		event.stopPropagation();
 		// init(vroom);
@@ -232,18 +252,21 @@ function rejoin(vroom) {
 		console.info("remove child");
 		event.preventDefault();
 		event.stopPropagation();
+		location.hash = "";
+		chrome.runtime.sendMessage({"a": "setRoom", "room":""});
 		p_rejoin.parentNode.removeChild(p_rejoin);
 	}
-	p_rejoin.onclick = cancel;
-	// $0('.viroomie_cancel').onclick = cancel;
+	// p_rejoin.onclick = cancel;
+	$0('.viroomie_cancel').onclick = cancel;
 
+	// console.log("loading files");
 	loadFiles();
 
 }
 if(!window["viroomieListener"]) {
 	window["viroomieListener"] = true;
 	chrome.runtime.onMessage.addListener(function(message, sender, callback) {
-		console.log("message from popup.js:", message);
+		// console.log("message from popup.js:", message);
 		// console.log("jQuery",$);
 		switch(message.a) {
 			case "init":
@@ -255,7 +278,7 @@ if(!window["viroomieListener"]) {
 					return;
 				}
 
-				init(message.room);
+				join(false, message.room);
 
 				callback("started");
 				break;
@@ -283,10 +306,10 @@ if(!window["viroomieListener"]) {
 	});
 	var hashRoom = _getRoomFromHash(location.href);
 	if(hashRoom){
-		console.log("set",hashRoom);
+		// console.log("set",hashRoom);
 		chrome.runtime.sendMessage({"a": "setRoom", "room":hashRoom} );
 		if(!$0("#viroomieExternalWrap") && location.href.indexOf(EXTERNAL.url)!==-1) {
-			rejoin(hashRoom);
+			join(true, hashRoom);
 		} else {
 			console.log("other",EXTERNAL.v);
 			if(EXTERNAL.v=='md_pre') {
@@ -300,7 +323,7 @@ if(!window["viroomieListener"]) {
 					document.body.classList.remove("viroomie_rejoin_md");
 					button.parentNode.removeChild(button);
 					hr.parentNode.removeChild(hr);
-					chrome.runtime.sendMessage({"a": "setRoom", "room":""} );
+					chrome.runtime.sendMessage({"a": "setRoom", "room":""});
 				};
 				container.appendChild(hr);
 				container.appendChild(button);
@@ -311,12 +334,12 @@ if(!window["viroomieListener"]) {
 		}
 	} else {
 		chrome.runtime.sendMessage({"a": "getRoom"}, function(response) {
-			console.log("get",response["room"]);
+			// console.log("get",response["room"]);
 			hashRoom = response["room"];
 			if(hashRoom) {
 				location.hash = "#room="+hashRoom;
 				if(!$0("#viroomieExternalWrap") && location.href.indexOf(EXTERNAL.url)!==-1) {
-					rejoin(hashRoom);
+					join(true, hashRoom);
 				}
 			}
 		});

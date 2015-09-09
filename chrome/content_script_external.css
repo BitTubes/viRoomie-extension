@@ -79,6 +79,12 @@
 .viroomie_join::before {
 	content: "Open in ";
 }
+.viroomie_join::after {
+	content: "new viRoom";
+}
+.viroomie_join[data-room]::after {
+	content: "#"attr(data-room);
+}
 .viroomie_cancel::before {
 	content: "Cancel";
 }
