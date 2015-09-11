@@ -239,7 +239,7 @@ function showExternalPlayer(tabId, url) {
       }
     });
   };
-  chrome.tabs.sendMessage(tabId, {"a":"load",}, function() {});
+  chrome.tabs.sendMessage(tabId, {"a":"load"}, function() {});
 
   p_openapp.innerHTML = _("open_new");
   p_openapp.setAttribute("data-room","");

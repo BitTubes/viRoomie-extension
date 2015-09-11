@@ -7,11 +7,13 @@
 	display: none;
 	z-index: 1;
 	background-color: rgba(255, 255, 255, 0.6);
+	line-height: normal;
 }
 .viroomie_rejoin * {
 	color: #fff;
 	font-family: 'Source Sans Pro', sans-serif;
 	font-size: 20px;
+	line-height: normal;
 }
 .viroomie_rejoin > div {
 	position: fixed;
@@ -70,6 +72,7 @@
 	background-color: #000;
 	border: 0;
 	outline: 0;
+	cursor: pointer;
 }
 .viroomie_cancel:hover,
 .viroomie_rejoin > div > button:hover {
@@ -93,7 +96,10 @@
 	content: "In ";
 }
 .lang_de .viroomie_join::after {
-	content: " öffnen";
+	content: "neuem viRoom öffnen";
+}
+.lang_de .viroomie_join[data-room]::after {
+	content: "#"attr(data-room)" öffnen";
 }
 .lang_de .viroomie_cancel::before {
 	content: "Abbrechen";
@@ -136,7 +142,7 @@
 	box-shadow: 0 0 70px 0 #000;
 }
 .viroomie_rejoin_md .col--cta li::before {
-	content: "~ viRoomie ~ starten";
+	content: "~ viRoomie ~";
 	font-size: 20px;
 	padding: 1em 2em;
 	text-align: center;
