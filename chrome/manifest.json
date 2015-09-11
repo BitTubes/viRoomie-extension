@@ -3,7 +3,7 @@
 
   "name": "__MSG_application_title__",
   "description": "__MSG_application_description__",
-  "version": "1.4.5",
+  "version": "1.5.0",
   "default_locale": "en",
   "icons": {
     "16": "img/icon16.png",
@@ -29,6 +29,13 @@
   "content_scripts": [
     {
       "matches": [
+        // "*://www.ardmediathek.de/*",
+        // "*://mediathek.daserste.de/*",
+        // "*://sr-mediathek.sr-online.de/*",
+        // "*://hessenschau.de/*",
+        "*://mediathek.rbb-online.de/*",
+        "*://www.zdf.de/ZDFmediathek/*",
+
         "http://www.netflix.com/*",
         "*://*.maxdome.de/*"
       ],
@@ -52,6 +59,15 @@
     "activeTab",
     "declarativeContent",
     "tabs",
+
+    // "*://www.ardmediathek.de/*", // weird javascript
+    // "*://mediathek.daserste.de/*", // weird javascript
+    // "*://sr-mediathek.sr-online.de/*", // old jQuery 1.5.1 incompat with tabcomplete
+    // "*://hessenschau.de/*",
+    "*://mediathek.rbb-online.de/*",
+
+    "*://www.zdf.de/ZDFmediathek/*",
+
     "http://www.netflix.com/*",
     "*://*.maxdome.de/*",
     "*://app.viroomie.com/*"

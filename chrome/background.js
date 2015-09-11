@@ -146,46 +146,99 @@ chrome.runtime.onInstalled.addListener(function() {
         // },
         {
           conditions: [
-            // That fires when a page's URL contains a 'chrome' ...
             new chrome.declarativeContent.PageStateMatcher({
               pageUrl: { 
                 hostEquals: 'www.youtube.com'//,
                 // pathPrefix: '/watch'
               },
-            })
-          ],
-          // And shows the extension's page action.
-          actions: [ new chrome.declarativeContent.ShowPageAction() ]
-        },
-        {
-          conditions: [
-            // That fires when a page's URL contains a 'chrome' ...
+            }),
             new chrome.declarativeContent.PageStateMatcher({
               pageUrl: { 
-                // pathPrefix: '/watch',
                 hostEquals: 'www.netflix.com'
               },
-            })
-          ],
-          // And shows the extension's page action.
-          actions: [ new chrome.declarativeContent.ShowPageAction() ]
-        },
-        {
-          conditions: [
-            // That fires when a page's URL contains a 'chrome' ...
+            }),
             new chrome.declarativeContent.PageStateMatcher({
               pageUrl: { 
                 pathPrefix: '/webplayer/',
                 hostEquals: 'play.maxdome.de'
               },
-            })
-          ],
-          // And shows the extension's page action.
-          actions: [ new chrome.declarativeContent.ShowPageAction() ]
-        },
-        {
-          conditions: [
-            // That fires when a page's URL contains a 'chrome' ...
+            }),
+
+
+            // ************* MEDIATHEKEN **************
+            // new chrome.declarativeContent.PageStateMatcher({
+            //   // pageUrl: { 
+            //   //   hostEquals: [
+            //   //   'mediathek.rbb-online.de',
+            //   //   'www.ardmediathek.de',
+            //   //   'mediathek.daserste.de',
+            //   //   'sr-mediathek.sr-online.de'
+            //   //   ]
+            //   // },
+            //   css: ["video.ardplayer-mediacanvas"]
+            // }),
+            // new chrome.declarativeContent.PageStateMatcher({
+            //   pageUrl: { 
+            //     hostEquals: 'www.ardmediathek.de'
+            //   },
+            //   css: ["video.ardplayer-mediacanvas"]
+            // }),
+            // new chrome.declarativeContent.PageStateMatcher({
+            //   pageUrl: { 
+            //     hostEquals: 'mediathek.daserste.de'
+            //   },
+            //   css: ["video.ardplayer-mediacanvas"]
+            // }),
+            new chrome.declarativeContent.PageStateMatcher({
+              pageUrl: { 
+                hostEquals: 'mediathek.rbb-online.de'
+              },
+              css: ["video.ardplayer-mediacanvas"]
+            }),
+            // new chrome.declarativeContent.PageStateMatcher({
+            //   pageUrl: { 
+            //     hostEquals: 'sr-mediathek.sr-online.de'
+            //   },
+            //   css: ["video.ardplayer-mediacanvas"]
+            // }),
+            // new chrome.declarativeContent.PageStateMatcher({
+            //   pageUrl: { 
+            //     pathPrefix: '/mediathek/video/',
+            //     hostEquals: 'www.br.de'
+            //   },
+            //   css: ["video.ready"] // they dont set the source before the user clicked on it once...
+            // }),
+            new chrome.declarativeContent.PageStateMatcher({
+              pageUrl: { 
+                pathPrefix: '/tv-sendung/',
+                hostEquals: 'hessenschau.de' // HR / Hessischer Rundfunk
+              },
+              css: ["video"]
+            }),
+            // new chrome.declarativeContent.PageStateMatcher({
+            //   pageUrl: { 
+            //     pathPrefix: '/mediathek/video/',
+            //     hostSuffix: 'wdr.de' // README can have multiple subdomains, requires a click
+            //   },
+            //   css: ["video"]
+            // }),
+            // MDR uses a popup-overlay http://www.mdr.de/mediathek
+            // NDR adds the video only after clicking on an image http://www.ndr.de/mediathek/
+            // SWR uses jwplayer and sets the url only after a click on an image http://www.swrmediathek.de/
+            // DW adds the source only after a click http://www.dw.com/
+
+            new chrome.declarativeContent.PageStateMatcher({
+              pageUrl: { 
+                pathPrefix: '/ZDFmediathek/',
+                hostEquals: 'www.zdf.de'
+              },
+              css: ["video"]
+            }),
+            // ************* MEDIATHEKEN **************
+
+
+
+
             new chrome.declarativeContent.PageStateMatcher({
               pageUrl: { 
                 hostEquals: 'nlv.bittubes.com',

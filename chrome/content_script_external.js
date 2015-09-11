@@ -14,7 +14,29 @@ var styles = [
 	'//fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Poiret+One',
 	baseDir + 'css/style.css'
 ];
+var mediathek_ard = {
+	v : 'ard',
+	p_playpause : '.ardplayer-btn-playpause',
+	p_video : 'video.ardplayer-mediacanvas',
+	initialPauseDelay : 2000,
+	loader : baseDir + 'js/lib/loader-external-1.2.0.min.js'
+
+};
 var EXTERNAL = {
+	// "www.ardmediathek.de": mediathek_ard,
+	// "mediathek.daserste.de": mediathek_ard,
+	// "sr-mediathek.sr-online.de": mediathek_ard,
+	// "hessenschau.de" : mediathek_ard,
+	"mediathek.rbb-online.de": mediathek_ard,
+
+	'www.zdf.de/ZDFmediathek': {
+		v : 'zdf',
+		p_playpause : '#zdfplayer1_playPauseButton',
+		p_video : 'video',
+		initialPauseDelay : 2000,
+		loader : baseDir + 'js/lib/loader-external-1.2.0.min.js'
+	},
+
 	'www.netflix.com/watch': {
 		v : 'nf',
 		p_playpause : '.player-play-pause',
@@ -210,6 +232,11 @@ function join(rejoin, vroom) {
 		};
 		resetPlayBtn();
 		break;
+	case 'zdf':
+		$0("#flashHinweis").style.display = "none";
+		$0("#linkDownloadFlash").style.display = "none";
+		// no break here
+	case 'ard':
 	case 'md':
 		if(!$1(EXTERNAL.p_video).length) {
 			// console.log("retry in 100ms");

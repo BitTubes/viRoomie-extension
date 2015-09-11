@@ -219,7 +219,7 @@ function checkEmbedStatus(url, callback) {
 
 }
 function initExternalPlayer(data) {
-  // console.log("response from content-script: ",data);
+  console.log("response from content-script: ",data);
   if(data.a=="nf200") {
     p_msg.innerHTML = _("already_loaded");
     p_external.style.display = "block";
@@ -231,6 +231,7 @@ function initExternalPlayer(data) {
 }
 function showExternalPlayer(tabId, url) {
   openViRoomie = function(){
+    // console.error("openViRoomie", tabId, url);
     var room = this.getAttribute("data-room") || "";
     chrome.tabs.sendMessage(tabId, {"a":"init", "room": room}, function(data) {
       // console.log("response from content-script: ",data);
@@ -281,7 +282,25 @@ document.addEventListener('DOMContentLoaded', function() {
       p_updateapps.style.display = "none";
     }
   }
+  var externalUrls = [
+    "netflix.com/watch",
+    "maxdome.de/webplayer",
 
+    "www.ardmediathek.de",
+    "mediathek.daserste.de",
+    "mediathek.rbb-online.de",
+    "sr-mediathek.sr-online.de",
+    "hessenschau.de",
+    "www.zdf.de"
+  ];
+  function isExternalUrl(url) {
+    for (var i = externalUrls.length - 1; i >= 0; i--) {
+      if(url.indexOf(externalUrls[i])>0) {
+        return true;
+      }
+    }
+    return false;
+  }
   getCurrentTabUrl(function(url, tabId) {
     processUrl(url, function() { // inside viRoomie
 
@@ -303,15 +322,9 @@ document.addEventListener('DOMContentLoaded', function() {
             p_openapp.style.display = "none";
           }
         });
-      } else if(url.indexOf("netflix.com/watch")>0) {
+      } else if(isExternalUrl(url)) {
+        console.log("isExternal");
         chrome.tabs.sendMessage(tabId, {"a":"running", "tabId":tabId, "url":url}, function(data){
-          initExternalPlayer(data);
-        });
-        return;
-        // chrome.tabs.sendMessage(tabId, {"a":"running"});
-      } else if(url.indexOf("maxdome.de/webplayer")>0) {
-        chrome.tabs.sendMessage(tabId, {"a":"running", "tabId":tabId, "url":url}, function(data){
-          console.log("cb-data",data);
           initExternalPlayer(data);
         });
         return;
