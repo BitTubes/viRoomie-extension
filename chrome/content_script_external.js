@@ -42,7 +42,7 @@ var EXTERNAL = {
 		p_playpause : '.player-play-pause',
 		p_video : 'video',
 		initialPauseDelay : 5000,
-		loader : baseDir + 'js/lib/loader-external-1.1.0.min.js'
+		loader : baseDir + 'js/lib/loader-external-1.2.0.min.js'
 		// loader : baseDir + 'js/lib/loader-netflix-1.0.0.min.js'
 	},
 	'play.maxdome.de': {
@@ -50,7 +50,7 @@ var EXTERNAL = {
 		p_playpause : '#player-controls--play-toggle',
 		p_video : '#videoPlayer',
 		initialPauseDelay : 2000,
-		loader : baseDir + 'js/lib/loader-external-1.1.0.min.js'
+		loader : baseDir + 'js/lib/loader-external-1.2.0.min.js'
 	},
 
 	// pre-player-loaders
@@ -211,7 +211,7 @@ var specialChar = {
 	}
 };
 function join(rejoin, vroom) {
-	console.log("join",rejoin, vroom);
+	// console.log("join",rejoin, vroom);
 	if($1(".viroomie_rejoin").length) { // in case we pressed the popup-button before...
 		return;
 	}
@@ -257,6 +257,7 @@ function join(rejoin, vroom) {
 	var body = $0("body") || document.documentElement;
 	var p_rejoin = document.createElement('div');
 	p_rejoin.classList.add('viroomie_rejoin');
+	p_rejoin.classList.add('viroomie');
 	p_rejoin.innerHTML = '<div><input class="viroomie_usernameInput" type="text" maxlength="20" placeholder="My Name" autofocus><br><button class="viroomie_join" '+ (vroom?'data-room="'+vroom+'"':'') +'></button><hr><button class="viroomie_cancel"></button></div>';
 	body.appendChild(p_rejoin);
 	$0('.viroomie_join').onclick = function() {
@@ -293,7 +294,7 @@ function join(rejoin, vroom) {
 if(!window["viroomieListener"]) {
 	window["viroomieListener"] = true;
 	chrome.runtime.onMessage.addListener(function(message, sender, callback) {
-		// console.log("message from popup.js:", message);
+		console.log("message from popup.js:", message);
 		// console.log("jQuery",$);
 		switch(message.a) {
 			case "init":
