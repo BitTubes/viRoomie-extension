@@ -169,3 +169,19 @@
 	display: block !important;
 }
 */
+
+#zdfplayer1:-webkit-full-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto!important;
+    height: auto!important;
+}
+
+#zdfplayer1:-webkit-full-screen .uiVideo,
+#zdfplayer1:-webkit-full-screen video {
+    width: 100% !important;
+    height: 100% !important;
+}
