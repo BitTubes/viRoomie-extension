@@ -191,3 +191,12 @@
     font-size: 1.5em;
     font-weight: bold;
 }
+.introjs-tooltip a {
+	text-decoration: none;
+}
+.introjs-tooltipReferenceLayer {
+	font-size:13px;
+}
+.introjs-tooltipReferenceLayer * {
+	font-family: 'Source Sans Pro', sans-serif;
+}

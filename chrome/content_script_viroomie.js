@@ -13,7 +13,7 @@
 // });
 
 chrome.runtime.onMessage.addListener(function(message, sender, callback) {
-	console.log("message from popup.js:", message);
+	// console.log("message from popup.js:", message);
 	switch(message.a) {
 		case "state":
 			callback("to-do");
