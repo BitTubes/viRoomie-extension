@@ -27,35 +27,34 @@ chrome.runtime.onConnect.addListener(function(port) {
     if (info.selection.length > max_length){
       info.selection = info.selection.substring(0, max_length);
     }
-    executeMailto(tab.id, info.title, tab.url, info.selection);
+    // executeMailto(tab.id, info.title, tab.url, info.selection);
   });
 });
 
 var manifestData = chrome.runtime.getManifest();
 // console.log(manifestData);
-chrome.runtime.onMessageExternal.addListener( function(request, sender, sendResponse) {
+var msgHandler = function(request, sender, sendResponse) {
   // console.info("test");
-  if (request && request.message == "version") {
-    sendResponse({version: manifestData.version});
+  if (request) {
+    console.log("msg from:", sender, "msg:", request);
+    if (request.message == "version") {
+      sendResponse({version: manifestData.version});
+      return true;
+    }
+    switch(request.a) {
+    case "setRoom":
+      localStorage.setItem("viroomie-room",request.room);
+      sendResponse({room: localStorage.getItem("viroomie-room")});
+      break;
+    case "getRoom":
+      sendResponse({room: localStorage.getItem("viroomie-room")});
+      break;
+    }
   }
   return true;
-});
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    console.log(sender.tab ?
-                "from a content script:" + sender.tab.url :
-                "from the extension");
-    if (request) {
-      switch(request.a) {
-      case "setRoom":
-        localStorage.setItem("viroomie-room",request.room);
-        break;
-      case "getRoom":
-        sendResponse({room: localStorage.getItem("viroomie-room")});
-        break;
-      }
-    }
-  });
+};
+chrome.runtime.onMessageExternal.addListener( msgHandler );
+chrome.runtime.onMessage.addListener( msgHandler);
 
 var path19 = "img/icon19_share.png";
 // var path38 = "img/icon19_share.png";

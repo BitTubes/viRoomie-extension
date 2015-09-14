@@ -277,10 +277,10 @@ function join(rejoin, vroom) {
 		// p_rejoin.style.display = "none";
 	};
 	function cancel(event) {
-		console.info("remove child");
+		// console.info("remove child", p_rejoin);
 		event.preventDefault();
 		event.stopPropagation();
-		location.hash = "";
+		// location.hash = "";
 		chrome.runtime.sendMessage({"a": "setRoom", "room":""});
 		p_rejoin.parentNode.removeChild(p_rejoin);
 	}
@@ -294,7 +294,7 @@ function join(rejoin, vroom) {
 if(!window["viroomieListener"]) {
 	window["viroomieListener"] = true;
 	chrome.runtime.onMessage.addListener(function(message, sender, callback) {
-		console.log("message from popup.js:", message);
+		// console.log("message from popup.js:", message);
 		// console.log("jQuery",$);
 		switch(message.a) {
 			case "init":
@@ -322,11 +322,11 @@ if(!window["viroomieListener"]) {
 					tabId : message.tabId,
 					url : message.url
 				};
-				console.log(cb_value);
+				// console.log(cb_value);
 				callback(cb_value);
 				break;
 			default:
-			console.log("unknown state:", message.a);
+				// console.log("unknown state:", message.a);
 				callback(false);
 
 		}
@@ -339,7 +339,7 @@ if(!window["viroomieListener"]) {
 		if(!$0("#viroomieExternalWrap") && location.href.indexOf(EXTERNAL.url)!==-1) {
 			join(true, hashRoom);
 		} else {
-			console.log("other",EXTERNAL.v);
+			// console.log("other",EXTERNAL.v);
 			if(EXTERNAL.v=='md_pre') {
 				var container = $0(".col--cta.has-tooltip-list li");
 				var hr = document.createElement('hr');
@@ -362,10 +362,10 @@ if(!window["viroomieListener"]) {
 		}
 	} else {
 		chrome.runtime.sendMessage({"a": "getRoom"}, function(response) {
-			// console.log("get",response["room"]);
+			console.log("get",response["room"]);
 			hashRoom = response["room"];
 			if(hashRoom) {
-				location.hash = "#room="+hashRoom;
+				// location.hash = "#room="+hashRoom;
 				if(!$0("#viroomieExternalWrap") && location.href.indexOf(EXTERNAL.url)!==-1) {
 					join(true, hashRoom);
 				}
