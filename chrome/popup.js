@@ -231,10 +231,10 @@ function initExternalPlayer(data) {
 }
 function showExternalPlayer(tabId, url) {
   openViRoomie = function(){
-    // console.error("openViRoomie", tabId, url);
+    console.error("openViRoomie", tabId, url);
     var room = this.getAttribute("data-room") || "";
     chrome.tabs.sendMessage(tabId, {"a":"init", "room": room}, function(data) {
-      // console.log("response from content-script: ",data);
+      console.log("response from content-script: ",data);
       if(data=="started") {
         window.close();
       }
