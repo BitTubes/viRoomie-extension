@@ -24,7 +24,8 @@ var mediathek_ard = {
 	loader : baseDir + 'js/lib/loader-external-1.2.0.min.js'
 
 };
-var EXTERNAL = {
+var EXTERNAL,
+	EXTERNALS = {
 	// "www.ardmediathek.de": mediathek_ard,
 	// "mediathek.daserste.de": mediathek_ard,
 	// "sr-mediathek.sr-online.de": mediathek_ard,
@@ -59,22 +60,29 @@ var EXTERNAL = {
 	'www.maxdome.de': {
 		v : 'md_pre',
 		pre : true
+	},
+	'www.netflix.com/title': {
+		v : 'nf_pre',
+		pre : true
 	}
 };
-
-for(var el in EXTERNAL) {
-	if(location.href.indexOf(el) !== -1) {
-		EXTERNAL[el].url = el;
-		EXTERNAL = EXTERNAL[el];
-		if(EXTERNAL.loader) {
-			scripts.push(EXTERNAL.loader);
+function setExternal() {
+	EXTERNAL = {};
+	for(var el in EXTERNALS) {
+		if(location.href.indexOf(el) !== -1) {
+			EXTERNAL = EXTERNALS[el];
+			EXTERNAL.url = el;
+			if(EXTERNAL.loader) {
+				scripts.push(EXTERNAL.loader);
+			}
+			break;
 		}
-		break;
+	}
+	if(EXTERNAL.pre) {
+		EXTERNAL.url = null;
 	}
 }
-if(EXTERNAL.pre) {
-	EXTERNAL.url = null;
-}
+setExternal();
 
 function $0(selector, base) {
 	return $1(selector, base)[0];
@@ -296,11 +304,12 @@ function join(rejoin, vroom) {
 if(!window["viroomieListener"]) {
 	window["viroomieListener"] = true;
 	chrome.runtime.onMessage.addListener(function(message, sender, callback) {
-		// console.log("message from popup.js:", message);
+		console.log("message from popup.js:", message);
 		// console.log("jQuery",$);
 		switch(message.a) {
 			case "init":
 				if($0("#viroomieExternalWrap") && $0("body.online")) {
+					callback(500);
 					return;
 				}
 				if(!$0('html').classList.contains("viroomie-loaded")) {
@@ -320,11 +329,11 @@ if(!window["viroomieListener"]) {
 				break;
 			case "running":
 				var cb_value = {
-					"a": $0("#viroomieExternalWrap") && $0("body.online") ? "nf200" : "nf400",
+					"a": ($0("#viroomieExternalWrap") && $0("body.online")) ? "nf200" : "nf400",
 					tabId : message.tabId,
 					url : message.url
 				};
-				// console.log(cb_value);
+				console.log("cb_value", cb_value);
 				callback(cb_value);
 				break;
 			default:
@@ -334,43 +343,58 @@ if(!window["viroomieListener"]) {
 		}
 
 	});
-	var hashRoom = _getRoomFromHash(location.href);
-	if(hashRoom){
-		// console.log("set",hashRoom);
-		chrome.runtime.sendMessage({"a": "setRoom", "room":hashRoom} );
+	var handleHashFound = function() {
 		if(!$0("#viroomieExternalWrap") && location.href.indexOf(EXTERNAL.url)!==-1) {
 			join(true, hashRoom);
 		} else {
 			// console.log("other",EXTERNAL.v);
-			if(EXTERNAL.v=='md_pre') {
-				var container = $0(".col--cta.has-tooltip-list li");
-				var hr = document.createElement('hr');
-				hr.className = 'viroomie_hr';
-				var button = document.createElement('button');
-				button.className = "viroomie_cancel";
-				// button.style.display="none";
-				button.onclick = function() {
-					document.body.classList.remove("viroomie_rejoin_md");
-					button.parentNode.removeChild(button);
-					hr.parentNode.removeChild(hr);
-					chrome.runtime.sendMessage({"a": "setRoom", "room":""});
-				};
-				container.appendChild(hr);
-				container.appendChild(button);
+			switch(EXTERNAL.v) {
+				case 'md_pre':
+					var container = $0(".col--cta.has-tooltip-list li");
+					var hr = document.createElement('hr');
+					hr.className = 'viroomie_hr';
+					var button = document.createElement('button');
+					button.className = "viroomie_cancel";
+					// button.style.display="none";
+					button.onclick = function() {
+						document.body.classList.remove("viroomie_rejoin_md");
+						button.parentNode.removeChild(button);
+						hr.parentNode.removeChild(hr);
+						chrome.runtime.sendMessage({"a": "setRoom", "room":""});
+					};
+					container.appendChild(hr);
+					container.appendChild(button);
 
-				document.body.classList.add("viroomie_rejoin_md");
-				document.body.classList.add("lang_de");
+					document.body.classList.add("viroomie_rejoin_md");
+					document.body.classList.add("lang_de");
+				break;
+				case 'nf_pre':
+					function checkUrlChange(){
+						setExternal();
+						if(EXTERNAL.v === "nf") {
+							handleHashFound();
+						} else {
+							window.setTimeout(checkUrlChange, 1000);
+						}
+					}
+					checkUrlChange();
+				break;
 			}
 		}
+	};
+	var hashRoom = _getRoomFromHash(location.href);
+	if(hashRoom){
+		// console.log("set",hashRoom);
+		chrome.runtime.sendMessage({"a": "setRoom", "room":hashRoom} );
+
+		handleHashFound();
 	} else {
 		chrome.runtime.sendMessage({"a": "getRoom"}, function(response) {
 			console.log("get",response["room"]);
 			hashRoom = response["room"];
 			if(hashRoom) {
 				// location.hash = "#room="+hashRoom;
-				if(!$0("#viroomieExternalWrap") && location.href.indexOf(EXTERNAL.url)!==-1) {
-					join(true, hashRoom);
-				}
+				handleHashFound();
 			}
 		});
 	}

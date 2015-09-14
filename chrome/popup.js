@@ -220,7 +220,7 @@ function checkEmbedStatus(url, callback) {
 }
 function initExternalPlayer(data) {
   console.log("response from content-script: ",data);
-  if(data.a=="nf200") {
+  if(data && data.a=="nf200") {
     p_msg.innerHTML = _("already_loaded");
     p_external.style.display = "block";
     p_updateapps.style.display = "none";
