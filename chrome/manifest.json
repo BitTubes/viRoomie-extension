@@ -34,7 +34,7 @@
         // "*://sr-mediathek.sr-online.de/*",
         // "*://hessenschau.de/*",
         "*://mediathek.rbb-online.de/*",
-        "*://www.zdf.de/ZDFmediathek/*",
+        // "*://www.zdf.de/ZDFmediathek/*",
 
         "http://www.netflix.com/*",
         "*://*.maxdome.de/*"
@@ -43,12 +43,21 @@
       "css": ["content_script_external.css"]
     },
     {
-      "matches": ["http://app.viroomie.com/*"],
+      "matches": [
+        "*://app.viroomie.com/*"
+      ],
       "js": ["content_script_viroomie.js"]
     }
   ],
   "externally_connectable": {
     "matches": [
+      // "*://www.ardmediathek.de/*",
+      // "*://mediathek.daserste.de/*",
+      // "*://sr-mediathek.sr-online.de/*",
+      // "*://hessenschau.de/*",
+      "*://mediathek.rbb-online.de/*",
+      // "*://www.zdf.de/ZDFmediathek/*",
+
       "http://www.netflix.com/watch/*",
       "http://play.maxdome.de/webplayer/*",
       "*://app.viroomie.com/*"
@@ -65,8 +74,7 @@
     // "*://sr-mediathek.sr-online.de/*", // old jQuery 1.5.1 incompat with tabcomplete
     // "*://hessenschau.de/*",
     "*://mediathek.rbb-online.de/*",
-
-    "*://www.zdf.de/ZDFmediathek/*",
+    // "*://www.zdf.de/ZDFmediathek/*",
 
     "http://www.netflix.com/*",
     "*://*.maxdome.de/*",
