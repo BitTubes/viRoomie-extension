@@ -9,7 +9,7 @@
 	background-color: rgba(255, 255, 255, 0.6);
 	line-height: normal;
 }
-.viroomie_rejoin * {
+.viroomie_rejoin.viroomie * {
 	color: #fff;
 	font-family: 'Source Sans Pro', sans-serif;
 	font-size: 20px;
@@ -31,7 +31,7 @@
 	padding: 0.5em 0.5em;
 	box-shadow: 0 0 70px 0 #000;
 }
-.viroomie_rejoin input {
+.viroomie_rejoin.viroomie input {
 	border: 0;
 	/*border-bottom: 2px solid #fff;*/
 	padding-bottom: 0.3em;
@@ -184,4 +184,10 @@
 #zdfplayer1:-webkit-full-screen video {
     width: 100% !important;
     height: 100% !important;
+}
+
+/*rbb overwrites*/
+.viroomie h2 {
+    font-size: 1.5em;
+    font-weight: bold;
 }
