@@ -1,3 +1,5 @@
+/* jshint node:true */
+/*globals chrome:false*/
 "use strict";
 
 var baseDir = "http://app.viroomie.com/";
@@ -18,7 +20,7 @@ var mediathek_ard = {
 	v : 'ard',
 	p_playpause : '.ardplayer-btn-playpause',
 	p_video : 'video.ardplayer-mediacanvas',
-	initialPauseDelay : 2000,
+	initialPauseDelay : 1000,
 	loader : baseDir + 'js/lib/loader-external-1.2.0.min.js'
 
 };
@@ -33,7 +35,7 @@ var EXTERNAL = {
 		v : 'zdf',
 		p_playpause : '#zdfplayer1_playPauseButton',
 		p_video : 'video',
-		initialPauseDelay : 2000,
+		initialPauseDelay : 500,
 		loader : baseDir + 'js/lib/loader-external-1.2.0.min.js'
 	},
 
@@ -49,7 +51,7 @@ var EXTERNAL = {
 		v : 'md',
 		p_playpause : '#player-controls--play-toggle',
 		p_video : '#videoPlayer',
-		initialPauseDelay : 2000,
+		initialPauseDelay : 500,
 		loader : baseDir + 'js/lib/loader-external-1.2.0.min.js'
 	},
 
@@ -326,7 +328,7 @@ if(!window["viroomieListener"]) {
 				callback(cb_value);
 				break;
 			default:
-				// console.log("unknown state:", message.a);
+			// console.log("unknown state:", message.a);
 				callback(false);
 
 		}
