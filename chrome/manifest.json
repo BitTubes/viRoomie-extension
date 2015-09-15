@@ -33,7 +33,7 @@
         // "*://mediathek.daserste.de/*",
         // "*://sr-mediathek.sr-online.de/*",
         // "*://hessenschau.de/*",
-        "*://mediathek.rbb-online.de/*",
+        "*://mediathek.rbb-online.de/tv/*",
         // "*://www.zdf.de/ZDFmediathek/*",
 
         "http://www.netflix.com/*",
@@ -55,7 +55,7 @@
       // "*://mediathek.daserste.de/*",
       // "*://sr-mediathek.sr-online.de/*",
       // "*://hessenschau.de/*",
-      "*://mediathek.rbb-online.de/*",
+      "*://mediathek.rbb-online.de/tv/*",
       // "*://www.zdf.de/ZDFmediathek/*",
 
       "http://www.netflix.com/watch/*",
@@ -73,7 +73,7 @@
     // "*://mediathek.daserste.de/*", // weird javascript
     // "*://sr-mediathek.sr-online.de/*", // old jQuery 1.5.1 incompat with tabcomplete
     // "*://hessenschau.de/*",
-    "*://mediathek.rbb-online.de/*",
+    "*://mediathek.rbb-online.de/tv/*",
     // "*://www.zdf.de/ZDFmediathek/*",
 
     "http://www.netflix.com/*",

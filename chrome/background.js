@@ -189,7 +189,8 @@ chrome.runtime.onInstalled.addListener(function() {
             //   css: ["video.ardplayer-mediacanvas"]
             // }),
             new chrome.declarativeContent.PageStateMatcher({
-              pageUrl: { 
+              pageUrl: {
+                pathPrefix: '/tv/',
                 hostEquals: 'mediathek.rbb-online.de'
               },
               css: ["video.ardplayer-mediacanvas"]

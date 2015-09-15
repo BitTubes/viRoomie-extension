@@ -24,13 +24,15 @@ var mediathek_ard = {
 	loader : baseDir + 'js/lib/loader-external-1.2.0.min.js'
 
 };
+var mediathek_rbb = mediathek_ard;
+mediathek_rbb.v = 'rbb';
 var EXTERNAL,
 	EXTERNALS = {
 	// "www.ardmediathek.de": mediathek_ard,
 	// "mediathek.daserste.de": mediathek_ard,
 	// "sr-mediathek.sr-online.de": mediathek_ard,
 	// "hessenschau.de" : mediathek_ard,
-	"mediathek.rbb-online.de": mediathek_ard,
+	"mediathek.rbb-online.de/tv/": mediathek_rbb,
 
 	'www.zdf.de/ZDFmediathek': {
 		v : 'zdf',
@@ -247,6 +249,7 @@ function join(rejoin, vroom) {
 		$0("#linkDownloadFlash").style.display = "none";
 		// no break here
 	case 'ard':
+	case 'rbb':
 	case 'md':
 		if(!$1(EXTERNAL.p_video).length) {
 			// console.log("retry in 100ms");
