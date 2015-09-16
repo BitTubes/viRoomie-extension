@@ -348,6 +348,12 @@ if(!window["viroomieListener"]) {
 				console.log("cb_value", cb_value);
 				callback(cb_value);
 				break;
+			case "newroom":
+				if(!hashRoom && !EXTERNAL.continuous) {
+					checkUrlChange();
+				}
+				hashRoom = message["room"];
+				break;
 			default:
 			// console.log("unknown state:", message.a);
 				callback(false);
