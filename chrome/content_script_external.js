@@ -33,7 +33,7 @@ var EXTERNAL,
 	// "mediathek.daserste.de": mediathek_ard,
 	// "sr-mediathek.sr-online.de": mediathek_ard,
 	// "hessenschau.de" : mediathek_ard,
-	"mediathek.rbb-online.de/tv/": mediathek_rbb,
+	"mediathek.rbb-online.de/tv": mediathek_rbb,
 
 	'www.zdf.de/ZDFmediathek': {
 		v : 'zdf',
