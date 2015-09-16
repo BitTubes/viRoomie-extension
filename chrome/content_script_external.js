@@ -91,6 +91,7 @@ function setExternal() {
 	if(EXTERNAL.pre) {
 		EXTERNAL.url = null;
 	}
+	// console.log(EXTERNAL);
 }
 setExternal();
 
@@ -318,15 +319,17 @@ function join(rejoin, vroom) {
 if(!window["viroomieListener"]) {
 	window["viroomieListener"] = true;
 	chrome.runtime.onMessage.addListener(function(message, sender, callback) {
-		console.log("message from popup.js:", message);
+		console.log("message from popup.js/external:", message);
 		// console.log("jQuery",$);
 		switch(message.a) {
 			case "init":
 				if($0("#viroomieExternalWrap") && $0("body.online")) {
+					console.log(500);
 					callback(500);
 					return;
 				}
 				if(!$0('html').classList.contains("viroomie-loaded")) {
+					console.log(428);
 					callback(428);
 					return;
 				}
