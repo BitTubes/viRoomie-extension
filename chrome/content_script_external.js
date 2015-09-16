@@ -26,6 +26,7 @@ var mediathek_ard = {
 };
 var mediathek_rbb = mediathek_ard;
 mediathek_rbb.v = 'rbb';
+mediathek_rbb.continuous = true;
 var EXTERNAL,
 	EXTERNALS = {
 	// "www.ardmediathek.de": mediathek_ard,
@@ -48,6 +49,7 @@ var EXTERNAL,
 		p_video : 'video',
 		initialPauseDelay : 5000,
 		loader : baseDir + 'js/lib/loader-external-1.3.0.min.js',
+		continuous : true
 	},
 	'play.maxdome.de': {
 		v : 'md',
@@ -59,12 +61,13 @@ var EXTERNAL,
 
 	// pre-player-loaders
 	'www.maxdome.de': {
-		v : 'md_pre',
+		v : 'md',
 		pre : true
 	},
 	'www.netflix.com/title': {
-		v : 'nf_pre',
-		pre : true
+		v : 'nf',
+		pre : true,
+		continuous : true
 	}
 };
 function setExternal() {
@@ -222,38 +225,40 @@ var specialChar = {
 	}
 };
 function join(rejoin, vroom) {
-	// console.log("join",rejoin, vroom);
+	console.error("join",rejoin, vroom);
 	if($1(".viroomie_rejoin").length) { // in case we pressed the popup-button before...
 		return;
 	}
-	switch(EXTERNAL.v) {
-	case 'nf':
-		if((!!window["netflix"] && !!window["netflix"]["cadmium"] && !!window["netflix"]["cadmium"]["objects"] && !!window["netflix"]["cadmium"]["objects"]["videoPlayer"]) || !$1('video').length) {	
-			// console.log("retry in 100ms");
-			window.setTimeout(join.bind(null, rejoin, vroom),100);
-			return;
-		}
-		var resetPlayBtn = function() { // pausing the video manually will leave netflix's JS and UI in the wrong state
-			var div = $1(".player-play-pause");
-			if(!div.length) {
-				window.setTimeout(resetPlayBtn, 200);
-			} else {
-				triggerClick(div[0]);
+	if(!EXTERNAL.pre) {
+		switch(EXTERNAL.v) {
+		case 'nf':
+			if((!!window["netflix"] && !!window["netflix"]["cadmium"] && !!window["netflix"]["cadmium"]["objects"] && !!window["netflix"]["cadmium"]["objects"]["videoPlayer"]) || !$1('video').length) {	
+				// console.log("retry in 100ms");
+				window.setTimeout(join.bind(null, rejoin, vroom),100);
+				return;
 			}
-		};
-		resetPlayBtn();
-		break;
-	case 'zdf':
-		$0("#flashHinweis").style.display = "none";
-		$0("#linkDownloadFlash").style.display = "none";
-		// no break here
-	case 'ard':
-	case 'rbb':
-	case 'md':
-		if(!$1(EXTERNAL.p_video).length) {
-			// console.log("retry in 100ms");
-			window.setTimeout(join.bind(null, rejoin, vroom),100);
-			return;
+			var resetPlayBtn = function() { // pausing the video manually will leave netflix's JS and UI in the wrong state
+				var div = $1(".player-play-pause");
+				if(!div.length) {
+					window.setTimeout(resetPlayBtn, 200);
+				} else if(div[0].classList.contains("pause")) { // only trigger click if button is in playing-mode
+					triggerClick(div[0]);
+				}
+			};
+			resetPlayBtn();
+			break;
+		case 'zdf':
+			$0("#flashHinweis").style.display = "none";
+			$0("#linkDownloadFlash").style.display = "none";
+			// no break here
+		case 'ard':
+		case 'rbb':
+		case 'md':
+			if(!$1(EXTERNAL.p_video).length) {
+				// console.log("retry in 100ms");
+				window.setTimeout(join.bind(null, rejoin, vroom),100);
+				return;
+			}
 		}
 	}
 	var video = $0(EXTERNAL.p_video);
@@ -294,6 +299,7 @@ function join(rejoin, vroom) {
 		event.stopPropagation();
 		// location.hash = "";
 		chrome.runtime.sendMessage({"a": "setRoom", "room":"", "player":EXTERNAL.v});
+		hashRoom = "";
 		p_rejoin.parentNode.removeChild(p_rejoin);
 	}
 	// p_rejoin.onclick = cancel;
@@ -345,13 +351,63 @@ if(!window["viroomieListener"]) {
 		}
 
 	});
+	var externalChangeTrack = null;
+	var externalChangeTrackPre = null;
+	var checkUrlChange = function(){
+		console.error("checkUrlChange");
+		if(!hashRoom && !EXTERNAL.continuous) {
+			console.log("quitting - no room saved");
+			return;
+		}
+		setExternal();
+		if(EXTERNAL.continuous) {
+			// console.log("continuous", EXTERNAL.url !== externalChangeTrack , EXTERNAL.pre !== externalChangeTrackPre);
+			if(EXTERNAL.url !== externalChangeTrack || EXTERNAL.pre !== externalChangeTrackPre) {
+				console.log("pre",EXTERNAL.pre);
+				if(EXTERNAL.pre) {
+					var temp;
+					if($1(".viroomie_rejoin").length) { // in case we pressed the popup-button before...
+						temp = $0(".viroomie_rejoin");
+						temp.parentNode.removeChild(temp);
+					}
+					if($1("#viroomieExternalWrap").length) {
+						temp = $0("#viroomieExternalWrap");
+						temp.parentNode.removeChild(temp);
+					}
+					if($1("body.online").length) {
+						document.body.classList.remove("online");
+						// document.body.classList.add("disconnectviroomie");
+						// triggerClick(document.body);
+						// socket.io.close();
+					}
+					if($1(".viroomie-loaded").length) {
+						$0("html").classList.remove("viroomie-loaded");
+					}
+
+				} else if(!EXTERNAL.pre && hashRoom) {
+					handleHashFound();
+				}
+			}
+			externalChangeTrack = EXTERNAL.url;
+			externalChangeTrackPre = EXTERNAL.pre;
+			window.setTimeout(checkUrlChange, 3000);
+		} else if(hashRoom) {
+			handleHashFound();
+		}
+	};
+
 	var handleHashFound = function() {
+		console.log("handleHashFound");
 		if(!$0("#viroomieExternalWrap") && location.href.indexOf(EXTERNAL.url)!==-1) {
+			// console.log("join");
 			join(true, hashRoom);
 		} else {
-			// console.log("other",EXTERNAL.v);
+			console.log("other",EXTERNAL.v);
 			switch(EXTERNAL.v) {
-				case 'md_pre':
+				case 'md':
+					if(!EXTERNAL.pre) {
+						return;
+					}
 					var container = $0(".col--cta.has-tooltip-list li");
 					var hr = document.createElement('hr');
 					hr.className = 'viroomie_hr';
@@ -370,17 +426,6 @@ if(!window["viroomieListener"]) {
 					document.body.classList.add("viroomie_rejoin_md");
 					document.body.classList.add("lang_de");
 				break;
-				case 'nf_pre':
-					function checkUrlChange(){
-						setExternal();
-						if(EXTERNAL.v === "nf") {
-							handleHashFound();
-						} else {
-							window.setTimeout(checkUrlChange, 1000);
-						}
-					}
-					checkUrlChange();
-				break;
 			}
 		}
 	};
@@ -389,14 +434,16 @@ if(!window["viroomieListener"]) {
 		// console.log("set",hashRoom);
 		chrome.runtime.sendMessage({"a": "setRoom", "room":hashRoom, "player":EXTERNAL.v} );
 
-		handleHashFound();
+		// handleHashFound();
+		checkUrlChange();
 	} else {
 		chrome.runtime.sendMessage({"a": "getRoom", "player":EXTERNAL.v}, function(response) {
 			console.log("get",response["room"]);
 			hashRoom = response["room"];
-			if(hashRoom) {
+			if(hashRoom || EXTERNAL.continuous) {
 				// location.hash = "#room="+hashRoom;
-				handleHashFound();
+				// handleHashFound();
+				checkUrlChange();
 			}
 		});
 	}
