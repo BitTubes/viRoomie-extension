@@ -27,6 +27,7 @@ var mediathek_ard = {
 var mediathek_rbb = mediathek_ard;
 mediathek_rbb.v = 'rbb';
 mediathek_rbb.continuous = true;
+mediathek_rbb.checkVideoExists = true;
 var EXTERNAL,
 	EXTERNALS = {
 	// "www.ardmediathek.de": mediathek_ard,
@@ -78,6 +79,9 @@ function setExternal() {
 			EXTERNAL.url = el;
 			if(EXTERNAL.loader) {
 				scripts.push(EXTERNAL.loader);
+			}
+			if(EXTERNAL.checkVideoExists) {
+				EXTERNAL.pre = !$1("video").length;
 			}
 			break;
 		}
