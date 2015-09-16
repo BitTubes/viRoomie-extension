@@ -318,7 +318,7 @@ if(!window["viroomieListener"]) {
 					callback(428);
 					return;
 				}
-
+				
 				join(false, message.room);
 
 				callback("started");
