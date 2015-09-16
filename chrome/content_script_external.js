@@ -21,7 +21,7 @@ var mediathek_ard = {
 	p_playpause : '.ardplayer-btn-playpause',
 	p_video : 'video.ardplayer-mediacanvas',
 	initialPauseDelay : 1000,
-	loader : baseDir + 'js/lib/loader-external-1.2.0.min.js'
+	loader : baseDir + 'js/lib/loader-external-rbb-1.3.0.min.js'
 
 };
 var mediathek_rbb = mediathek_ard;
@@ -39,7 +39,7 @@ var EXTERNAL,
 		p_playpause : '#zdfplayer1_playPauseButton',
 		p_video : 'video',
 		initialPauseDelay : 500,
-		loader : baseDir + 'js/lib/loader-external-1.2.0.min.js'
+		loader : baseDir + 'js/lib/loader-external-1.3.0.min.js'
 	},
 
 	'www.netflix.com/watch': {
@@ -47,15 +47,14 @@ var EXTERNAL,
 		p_playpause : '.player-play-pause',
 		p_video : 'video',
 		initialPauseDelay : 5000,
-		loader : baseDir + 'js/lib/loader-external-1.2.0.min.js'
-		// loader : baseDir + 'js/lib/loader-netflix-1.0.0.min.js'
+		loader : baseDir + 'js/lib/loader-external-1.3.0.min.js',
 	},
 	'play.maxdome.de': {
 		v : 'md',
 		p_playpause : '#player-controls--play-toggle',
 		p_video : '#videoPlayer',
 		initialPauseDelay : 500,
-		loader : baseDir + 'js/lib/loader-external-1.2.0.min.js'
+		loader : baseDir + 'js/lib/loader-external-1.3.0.min.js'
 	},
 
 	// pre-player-loaders
