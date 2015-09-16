@@ -266,7 +266,7 @@ function join(rejoin, vroom) {
 	video.addEventListener("timeupdate", initialPause, false);
 
 
-	var body = $0("body") || document.documentElement;
+	var body = $0("body");
 	var p_rejoin = document.createElement('div');
 	p_rejoin.classList.add('viroomie_rejoin');
 	p_rejoin.classList.add('viroomie');
@@ -293,7 +293,7 @@ function join(rejoin, vroom) {
 		event.preventDefault();
 		event.stopPropagation();
 		// location.hash = "";
-		chrome.runtime.sendMessage({"a": "setRoom", "room":""});
+		chrome.runtime.sendMessage({"a": "setRoom", "room":"", "player":EXTERNAL.v});
 		p_rejoin.parentNode.removeChild(p_rejoin);
 	}
 	// p_rejoin.onclick = cancel;
@@ -362,7 +362,7 @@ if(!window["viroomieListener"]) {
 						document.body.classList.remove("viroomie_rejoin_md");
 						button.parentNode.removeChild(button);
 						hr.parentNode.removeChild(hr);
-						chrome.runtime.sendMessage({"a": "setRoom", "room":""});
+						chrome.runtime.sendMessage({"a": "setRoom", "room":"", "player":EXTERNAL.v});
 					};
 					container.appendChild(hr);
 					container.appendChild(button);
@@ -387,11 +387,11 @@ if(!window["viroomieListener"]) {
 	var hashRoom = _getRoomFromHash(location.href);
 	if(hashRoom){
 		// console.log("set",hashRoom);
-		chrome.runtime.sendMessage({"a": "setRoom", "room":hashRoom} );
+		chrome.runtime.sendMessage({"a": "setRoom", "room":hashRoom, "player":EXTERNAL.v} );
 
 		handleHashFound();
 	} else {
-		chrome.runtime.sendMessage({"a": "getRoom"}, function(response) {
+		chrome.runtime.sendMessage({"a": "getRoom", "player":EXTERNAL.v}, function(response) {
 			console.log("get",response["room"]);
 			hashRoom = response["room"];
 			if(hashRoom) {
