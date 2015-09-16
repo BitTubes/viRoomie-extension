@@ -29,6 +29,7 @@ mediathek_rbb.v = 'rbb';
 mediathek_rbb.continuous = true;
 mediathek_rbb.checkVideoExists = true;
 var EXTERNAL,
+	loaderPushed = false,
 	EXTERNALS = {
 	// "www.ardmediathek.de": mediathek_ard,
 	// "mediathek.daserste.de": mediathek_ard,
@@ -77,7 +78,8 @@ function setExternal() {
 		if(location.href.indexOf(el) !== -1) {
 			EXTERNAL = EXTERNALS[el];
 			EXTERNAL.url = el;
-			if(EXTERNAL.loader) {
+			if(!loaderPushed && EXTERNAL.loader) {
+				loaderPushed=true;
 				scripts.push(EXTERNAL.loader);
 			}
 			if(EXTERNAL.checkVideoExists) {
