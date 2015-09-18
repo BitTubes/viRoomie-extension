@@ -2,6 +2,8 @@
 /*globals chrome:false*/
 "use strict";
 
+var _ = chrome.i18n.getMessage;
+
 var baseDir = "http://app.viroomie.com/";
 var scripts = [
 	baseDir + 'js/lib/jquery-2.1.4.min.js',
@@ -190,7 +192,7 @@ function init(room) {
 	}
 	var startViroomie = $0('#startViroomie');
 	if(!startViroomie) {
-		console.log("start bt 404");
+		// console.log("start bt 404");
 		addScript([EXTERNAL.loader+'?'+Date.now()], init.bind(null,room));
 		return;
 	}
@@ -232,7 +234,7 @@ var specialChar = {
 	}
 };
 function join(rejoin, vroom) {
-	console.error("join",rejoin, vroom);
+	// console.error("join",rejoin, vroom);
 	if($1(".viroomie_rejoin").length) { // in case we pressed the popup-button before...
 		return;
 	}
@@ -282,7 +284,7 @@ function join(rejoin, vroom) {
 	var p_rejoin = document.createElement('div');
 	p_rejoin.classList.add('viroomie_rejoin');
 	p_rejoin.classList.add('viroomie');
-	p_rejoin.innerHTML = '<div><input class="viroomie_usernameInput" type="text" maxlength="20" placeholder="My Name" autofocus><br><button class="viroomie_join" '+ (vroom?'data-room="'+vroom+'"':'') +'></button><hr><button class="viroomie_cancel"></button></div>';
+	p_rejoin.innerHTML = '<div><input class="viroomie_usernameInput" type="text" maxlength="20" placeholder="'+_("my_name")+'" autofocus><br><button class="viroomie_join" '+ (vroom?'data-room="'+vroom+'"':'') +'></button><hr><button class="viroomie_cancel"></button></div>';
 	body.appendChild(p_rejoin);
 	$0('.viroomie_join').onclick = function() {
 		event.stopPropagation();
@@ -319,7 +321,7 @@ function join(rejoin, vroom) {
 if(!window["viroomieListener"]) {
 	window["viroomieListener"] = true;
 	chrome.runtime.onMessage.addListener(function(message, sender, callback) {
-		console.log("message from popup.js/external:", message);
+		// console.log("message from popup.js/external:", message);
 		// console.log("jQuery",$);
 		switch(message.a) {
 			case "init":
@@ -350,7 +352,7 @@ if(!window["viroomieListener"]) {
 					tabId : message.tabId,
 					url : message.url
 				};
-				console.log("cb_value", cb_value);
+				// console.log("cb_value", cb_value);
 				callback(cb_value);
 				break;
 			case "newroom":
@@ -369,16 +371,16 @@ if(!window["viroomieListener"]) {
 	var externalChangeTrack = null;
 	var externalChangeTrackPre = null;
 	var checkUrlChange = function(){
-		console.error("checkUrlChange");
+		// console.log("checkUrlChange");
 		if(!hashRoom && !EXTERNAL.continuous) {
-			console.log("quitting - no room saved");
+			// console.log("quitting - no room saved");
 			return;
 		}
 		setExternal();
 		if(EXTERNAL.continuous) {
 			// console.log("continuous", EXTERNAL.url !== externalChangeTrack , EXTERNAL.pre !== externalChangeTrackPre);
 			if(EXTERNAL.url !== externalChangeTrack || EXTERNAL.pre !== externalChangeTrackPre) {
-				console.log("pre",EXTERNAL.pre);
+				// console.log("pre",EXTERNAL.pre);
 				if(EXTERNAL.pre) {
 					var temp;
 					if($1(".viroomie_rejoin").length) { // in case we pressed the popup-button before...
@@ -412,12 +414,12 @@ if(!window["viroomieListener"]) {
 	};
 
 	var handleHashFound = function() {
-		console.log("handleHashFound");
+		// console.log("handleHashFound");
 		if(!$0("#viroomieExternalWrap") && location.href.indexOf(EXTERNAL.url)!==-1) {
 			// console.log("join");
 			join(true, hashRoom);
 		} else {
-			console.log("other",EXTERNAL.v);
+			// console.log("other",EXTERNAL.v);
 			switch(EXTERNAL.v) {
 				case 'md':
 					if(!EXTERNAL.pre) {
@@ -453,7 +455,7 @@ if(!window["viroomieListener"]) {
 		checkUrlChange();
 	} else {
 		chrome.runtime.sendMessage({"a": "getRoom", "player":EXTERNAL.v}, function(response) {
-			console.log("get",response["room"]);
+			// console.log("get",response["room"]);
 			hashRoom = response["room"];
 			if(hashRoom || EXTERNAL.continuous) {
 				// location.hash = "#room="+hashRoom;

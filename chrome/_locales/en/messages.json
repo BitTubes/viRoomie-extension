@@ -35,5 +35,8 @@
   },
   "already_loaded": {
     "message": "Player already loaded"
+  },
+  "my_name": {
+    "message": "My Name"
   }
 }
