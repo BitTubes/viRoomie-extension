@@ -231,6 +231,18 @@ chrome.runtime.onInstalled.addListener(function() {
                 hostEquals: 'nlv.bittubes.com',
                 queryContains: 'uid='
               },
+            }),
+            new chrome.declarativeContent.PageStateMatcher({
+              pageUrl: { 
+                hostEquals: 'nlv.bittubes.com',
+                queryPrefix: 'v='
+              },
+            }),
+            new chrome.declarativeContent.PageStateMatcher({
+              pageUrl: { 
+                hostEquals: 'nlv.bittubes.com',
+                queryContains: '&v='
+              },
             })
           ],
           // And shows the extension's page action.
