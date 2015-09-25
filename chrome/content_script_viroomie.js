@@ -19,7 +19,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, callback) {
 			callback("to-do");
 		break;
 		case "url":
-			var m = document.getElementById("m");
+			var m = document.getElementById("v_m");
 			m.value = "/video "+message.url;
 			var b = document.getElementById("send");
 			if(b.click) {
