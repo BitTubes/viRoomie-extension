@@ -163,18 +163,18 @@ chrome.runtime.onInstalled.addListener(function() {
             //   // },
             //   css: ["video.ardplayer-mediacanvas"]
             // }),
-            // new chrome.declarativeContent.PageStateMatcher({
-            //   pageUrl: { 
-            //     hostEquals: 'www.ardmediathek.de'
-            //   },
-            //   css: ["video.ardplayer-mediacanvas"]
-            // }),
-            // new chrome.declarativeContent.PageStateMatcher({
-            //   pageUrl: { 
-            //     hostEquals: 'mediathek.daserste.de'
-            //   },
-            //   css: ["video.ardplayer-mediacanvas"]
-            // }),
+            new chrome.declarativeContent.PageStateMatcher({
+              pageUrl: { 
+                hostEquals: 'www.ardmediathek.de'
+              },
+              css: ["video.ardplayer-mediacanvas"]
+            }),
+            new chrome.declarativeContent.PageStateMatcher({
+              pageUrl: { 
+                hostEquals: 'mediathek.daserste.de'
+              },
+              css: ["video.ardplayer-mediacanvas"]
+            }),
             new chrome.declarativeContent.PageStateMatcher({
               pageUrl: {
                 pathPrefix: '/tv/',
