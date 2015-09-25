@@ -25,7 +25,8 @@ var mediathek_ard = {
 	initialPauseDelay : 500,
 	loader : baseDir + 'js/lib/loader-external-rbb-1.3.0.min.js',
 	continuous : true,
-	checkVideoExists : true
+	checkVideoExists : true,
+	setCookie : "ard_mediathek_player_settings="+encodeURIComponent('{"changedVolumeValue":1,"changedMuteValue":false,"lastUsedPlugin":1}')
 };
 var mediathek_rbb = mediathek_ard;
 mediathek_rbb.v = 'rbb';
@@ -91,6 +92,11 @@ function setExternal() {
 	}
 	if(EXTERNAL.pre) {
 		EXTERNAL.url = null;
+	}
+	if(EXTERNAL.setCookie) {
+		var date = new Date();
+        date.setTime(date.getTime()+(365*24*60*60*1000));
+		document.cookie = EXTERNAL.setCookie+'; expires='+date.toGMTString()+'; path=/';
 	}
 	// console.log(EXTERNAL);
 }
