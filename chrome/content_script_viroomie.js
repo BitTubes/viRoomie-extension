@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, callback) {
 		case "url":
 			var m = document.getElementById("v_m");
 			m.value = "/video "+message.url;
-			var b = document.getElementById("send");
+			var b = document.getElementById("bt_send");
 			if(b.click) {
 				b.click();
 			}
