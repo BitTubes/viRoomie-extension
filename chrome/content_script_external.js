@@ -68,16 +68,23 @@ var EXTERNAL,
 		v : 'md',
 		pre : true
 	},
+	'www.netflix.com/browse': {
+		v : 'nf',
+		pre : true,
+		continuous : true
+	},
 	'www.netflix.com/title': {
 		v : 'nf',
 		pre : true,
 		continuous : true
 	}
 };
+var updateExternal = false;
 function setExternal() {
-	EXTERNAL = {};
+	// EXTERNAL = {};
 	for(var el in EXTERNALS) {
 		if(location.href.indexOf(el) !== -1) {
+			updateExternal = true;
 			EXTERNAL = EXTERNALS[el];
 			EXTERNAL.url = el;
 			if(!loaderPushed && EXTERNAL.loader) {
@@ -90,9 +97,14 @@ function setExternal() {
 			break;
 		}
 	}
+	if(!updateExternal) {
+		EXTERNAL = {};
+	}
 	if(EXTERNAL.pre) {
 		EXTERNAL.url = null;
 	}
+	updateExternal = false;
+	// console.log("setExternal", EXTERNAL.v);
 	// console.log(EXTERNAL);
 }
 setExternal();
@@ -331,8 +343,9 @@ if(!window["viroomieListener"]) {
 					return;
 				}
 				if(!$0('html').classList.contains("viroomie-loaded")) {
-					console.log(428);
-					callback(428);
+					// console.log("428rl");
+					callback("428rl");
+					top.location.reload();
 					return;
 				}
 				
@@ -345,6 +358,8 @@ if(!window["viroomieListener"]) {
 					return;
 				}
 				loadFiles();
+				callback(EXTERNAL.v);
+				// console.log("ex-v",EXTERNAL.v);
 				break;
 			case "running":
 				var cb_value = {

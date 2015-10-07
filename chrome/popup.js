@@ -229,18 +229,29 @@ function initExternalPlayer(data) {
     showExternalPlayer(data.tabId, data.url);
   }
 }
+var EXTERNAL_v = "";
+
 function showExternalPlayer(tabId, url) {
   openViRoomie = function(){
     console.error("openViRoomie", tabId, url);
     var room = this.getAttribute("data-room") || "";
     chrome.tabs.sendMessage(tabId, {"a":"init", "room": room}, function(data) {
       console.log("response from content-script: ",data);
-      if(data=="started") {
+      if(data=="428rl") {
+        if(!localStorage.getItem("viroomie-room-"+EXTERNAL_v)) {
+          var newRoom = Math.random().toString(36).slice(-6)+(Math.random().toString(36).slice(-2));
+          localStorage.setItem("viroomie-room-"+EXTERNAL_v, newRoom);
+          localStorage.removeItem("viroomie-video-"+EXTERNAL_v);
+        }
+      }
+      if(data=="started" || data=="428rl") {
         window.close();
       }
     });
   };
-  chrome.tabs.sendMessage(tabId, {"a":"load"}, function() {});
+  chrome.tabs.sendMessage(tabId, {"a":"load"}, function(player) {
+    EXTERNAL_v = player;
+  });
 
   p_openapp.innerHTML = _("open_new");
   p_openapp.setAttribute("data-room","");

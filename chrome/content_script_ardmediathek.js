@@ -344,7 +344,8 @@ if(!window["viroomieListener"]) {
 				}
 				if(!$0('html').classList.contains("viroomie-loaded")) {
 					console.log(428);
-					callback(428);
+					callback("428rl");
+					top.location.reload();
 					return;
 				}
 				
@@ -357,6 +358,7 @@ if(!window["viroomieListener"]) {
 					return;
 				}
 				loadFiles();
+				callback(EXTERNAL.v);
 				break;
 			case "running":
 				var cb_value = {
