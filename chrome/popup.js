@@ -65,11 +65,17 @@ function _getYouTubeId(url) {
   return false;
 }
 
-
+var currentTabId = null;
 var openViRoomie = function(url) {
+  if(currentTabId) {
+    chrome.tabs.sendMessage(currentTabId, {"a":"stop"}, function() {});
+  }
   chrome.tabs.create( {url: "http://app.viroomie.com#video="+(url.split("=").join("%3D").split("&").join("%26"))} );
 };
 function updateViroom(url, tabId, windowId) {
+  if(currentTabId) {
+    chrome.tabs.sendMessage(currentTabId, {"a":"stop"}, function() {});
+  }
   chrome.tabs.sendMessage(tabId, {"a":"url", "url":url}, function(data) {
     console.log("response from content-script: ",data);
     chrome.tabs.update(tabId, { // make tab active in its window
@@ -324,6 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, function(url) { // external website
       
       if(url.indexOf("youtube.com/watch")>0) {
+        currentTabId = tabId;
         checkEmbedStatus(url,function(embeddable) {
           if(embeddable) {
             showButtons(url);

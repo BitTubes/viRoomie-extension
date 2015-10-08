@@ -53,6 +53,12 @@
         "*://app.viroomie.com/*"
       ],
       "js": ["content_script_viroomie.js"]
+    },
+    {
+      "matches": [
+        "*://www.youtube.com/*"
+      ],
+      "js": ["content_script_yt.js"]
     }
   ],
   "externally_connectable": {
@@ -82,6 +88,7 @@
     "*://mediathek.rbb-online.de/tv/*",
     // "*://www.zdf.de/ZDFmediathek/*",
 
+    "*://www.youtube.com/*",
     "http://www.netflix.com/*",
     "*://*.maxdome.de/*",
     "*://app.viroomie.com/*"
