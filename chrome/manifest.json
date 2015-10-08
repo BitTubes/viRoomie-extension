@@ -30,12 +30,12 @@
   "content_scripts": [
     {
       "matches": [
+        // "*://sr-mediathek.sr-online.de/*", // old jQuery 1.5.1 incompat with tabcomplete
+        // "*://hessenschau.de/*",
+        // "*://www.zdf.de/ZDFmediathek/*",
         "*://www.ardmediathek.de/*",
         "*://mediathek.daserste.de/*",
-        // "*://sr-mediathek.sr-online.de/*",
-        // "*://hessenschau.de/*",
         "*://mediathek.rbb-online.de/tv/*"
-        // "*://www.zdf.de/ZDFmediathek/*",
 
       ],
       "js": ["content_script_ardmediathek.js"],
@@ -64,12 +64,12 @@
   ],
   "externally_connectable": {
     "matches": [
+      // "*://sr-mediathek.sr-online.de/*", // old jQuery 1.5.1 incompat with tabcomplete
+      // "*://hessenschau.de/*",
+      // "*://www.zdf.de/ZDFmediathek/*",
       "*://www.ardmediathek.de/*",
       "*://mediathek.daserste.de/*",
-      // "*://sr-mediathek.sr-online.de/*",
-      // "*://hessenschau.de/*",
       "*://mediathek.rbb-online.de/tv/*",
-      // "*://www.zdf.de/ZDFmediathek/*",
 
       "http://www.netflix.com/watch/*",
       "http://play.maxdome.de/webplayer/*",
@@ -82,12 +82,12 @@
     "declarativeContent",
     "tabs",
 
-    "*://www.ardmediathek.de/*",
-    "*://mediathek.daserste.de/*",
     // "*://sr-mediathek.sr-online.de/*", // old jQuery 1.5.1 incompat with tabcomplete
     // "*://hessenschau.de/*",
-    "*://mediathek.rbb-online.de/tv/*",
     // "*://www.zdf.de/ZDFmediathek/*",
+    "*://www.ardmediathek.de/*",
+    "*://mediathek.daserste.de/*",
+    "*://mediathek.rbb-online.de/tv/*",
 
     "*://www.youtube.com/*",
     "http://www.netflix.com/*",
