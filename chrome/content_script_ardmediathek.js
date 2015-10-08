@@ -28,8 +28,8 @@ var mediathek_ard = {
 	checkVideoExists : true,
 	setCookie : "ard_mediathek_player_settings="+encodeURIComponent('{"changedVolumeValue":1,"changedMuteValue":false,"lastUsedPlugin":1}')
 };
-var mediathek_rbb = mediathek_ard;
-mediathek_rbb.v = 'rbb';
+// var mediathek_rbb = mediathek_ard;
+// mediathek_rbb.v = 'rbb';
 var EXTERNAL,
 	loaderPushed = false,
 	EXTERNALS = {
@@ -37,7 +37,7 @@ var EXTERNAL,
 	"mediathek.daserste.de": mediathek_ard,
 	// "sr-mediathek.sr-online.de": mediathek_ard,
 	// "hessenschau.de" : mediathek_ard,
-	"mediathek.rbb-online.de/tv": mediathek_rbb,
+	"mediathek.rbb-online.de/tv": mediathek_ard,
 
 	'www.zdf.de/ZDFmediathek': {
 		v : 'zdf',
@@ -102,6 +102,9 @@ function setExternal() {
 }
 setExternal();
 
+
+
+// +++++++ UTIL +++++++
 function $0(selector, base) {
 	return $1(selector, base)[0];
 }
@@ -109,21 +112,10 @@ function $1(selector, base) {
 	// console.log("$0",selector,base);
 	base = base || document;
 	if(base.querySelectorAll) {
-		// return base.querySelector(selector);
 		return base.querySelectorAll(selector);
 	} else {
 		return [];
 	}
-	// switch(selector.charAt(0)) {
-	// 	case ".":
-	// 		return base.getElementsByClassName(selector.substr(1));
-	// 		// break;
-	// 	case "#":
-	// 		return [document.getElementById(selector.substr(1))];
-	// 		// break;
-	// 	default:
-	// 		return base.getElementsByTagName(selector);
-	// }
 }
 function triggerClick(element) {
 	var evt = document.createEvent("MouseEvents");
@@ -131,6 +123,10 @@ function triggerClick(element) {
 
 	element.dispatchEvent(evt);
 }
+
+
+
+// +++++++ LOADERS +++++++
 function addScript(urls, fn) {
 	// console.log("addScripts", urls, fn);
 	var url = urls.shift();
@@ -193,7 +189,6 @@ function init(room) {
 			event.preventDefault();
 			event.stopPropagation();
 		}
-		// info.parentNode.removeChild(info);
 	}
 	var startViroomie = $0('#startViroomie');
 	if(!startViroomie) {
@@ -202,6 +197,7 @@ function init(room) {
 		return;
 	}
 	startViroomie.setAttribute("data-room", room);
+	console.log("new room",startViroomie.getAttribute("data-room"));
 	triggerClick(startViroomie);
 	var video = $0(EXTERNAL.p_video);
 	if(video) {
@@ -291,40 +287,58 @@ function join(rejoin, vroom) {
 
 
 	var body = $0("body");
-	var p_rejoin = document.createElement('div');
-	p_rejoin.classList.add('viroomie_rejoin');
-	p_rejoin.classList.add('viroomie');
-	p_rejoin.innerHTML = '<div><input class="viroomie_usernameInput" type="text" maxlength="20" placeholder="'+_("my_name")+'" autofocus><br><button class="viroomie_join" '+ (vroom?'data-room="'+vroom+'"':'') +'></button><hr><button class="viroomie_cancel"></button></div>';
-	body.appendChild(p_rejoin);
+	var p_rejoin = $1(".viroomie_rejoin");
+	if(!p_rejoin.length) { // in case we pressed the popup-button before...
+		p_rejoin = document.createElement('div');
+		p_rejoin.classList.add('viroomie_rejoin');
+		p_rejoin.classList.add('viroomie');
+		p_rejoin.innerHTML = '<div><input class="viroomie_usernameInput" type="text" maxlength="20" placeholder="'+_("my_name")+'" autofocus><br><button class="viroomie_join" '+ (vroom?'data-room="'+vroom+'"':'') +'></button><hr><button class="viroomie_cancel"></button></div>';
+		body.appendChild(p_rejoin);
+		var input = $0('.viroomie_usernameInput');
+		input.onkeyup = specialChar.filter;
+		input.onclick = function() {
+			event.stopPropagation();
+			// init(vroom);
+			// p_rejoin.style.display = "none";
+		};
+		function cancel(event) {
+			console.log("rejoin cancel");
+			// console.info("remove child", p_rejoin);
+			event.preventDefault();
+			event.stopPropagation();
+			// location.hash = "";
+			chrome.runtime.sendMessage({"a": "setRoom", "room":"", "video":"", "player":EXTERNAL.v});
+			hashRoom = "";
+			p_rejoin.parentNode.removeChild(p_rejoin);
+		}
+		// p_rejoin.onclick = cancel;
+		$0('.viroomie_cancel').onclick = cancel;
+	} else {
+		p_rejoin = p_rejoin[0];
+	}
 	$0('.viroomie_join').onclick = function() {
+		console.log("rejoin join", vroom);
 		event.stopPropagation();
 		init(vroom);
 		p_rejoin.style.display = "none";
+		var temp = $0("#viroomieExternalWrap");
+		if(temp) {
+			temp.style.display = "block";
+		}
 	};
 	if(!rejoin || viroomieKilled) { //  only do this on manual join (via popup.js)
 		console.error("reload loader");
 		viroomieKilled = false;
+		if(vroom) {
+			$0(".viroomie_join").setAttribute("data-room",vroom);
+		} else {
+			$0(".viroomie_join").removeAttribute("data-room");
+		}
+		$0("#restartViroomie").click();
+
 		addScript([EXTERNAL.loader+'?'+Date.now()]);
 		p_rejoin.style.display = "block";
 	}
-	var input = $0('.viroomie_usernameInput');
-	input.onkeyup = specialChar.filter;
-	input.onclick = function() {
-		event.stopPropagation();
-		// init(vroom);
-		// p_rejoin.style.display = "none";
-	};
-	function cancel(event) {
-		// console.info("remove child", p_rejoin);
-		event.preventDefault();
-		event.stopPropagation();
-		// location.hash = "";
-		chrome.runtime.sendMessage({"a": "setRoom", "room":"", "player":EXTERNAL.v});
-		hashRoom = "";
-		p_rejoin.parentNode.removeChild(p_rejoin);
-	}
-	// p_rejoin.onclick = cancel;
-	$0('.viroomie_cancel').onclick = cancel;
 
 	// console.log("loading files");
 	loadFiles();
@@ -332,6 +346,7 @@ function join(rejoin, vroom) {
 }
 if(!window["viroomieListener"]) {
 	window["viroomieListener"] = true;
+	var currentVideo = location.protocol + '//' + location.host + location.pathname + location.search;
 	chrome.runtime.onMessage.addListener(function(message, sender, callback) {
 		// console.log("message from popup.js/external:", message);
 		// console.log("jQuery",$);
@@ -340,6 +355,7 @@ if(!window["viroomieListener"]) {
 				if($0("#viroomieExternalWrap") && $0("body.online")) {
 					console.log(500);
 					callback(500);
+					top.location.reload();
 					return;
 				}
 				if(!$0('html').classList.contains("viroomie-loaded")) {
@@ -348,7 +364,9 @@ if(!window["viroomieListener"]) {
 					top.location.reload();
 					return;
 				}
-				
+				if(message["video"] && currentVideo != message["video"]) {
+					message.room = "";
+				}
 				join(false, message.room);
 
 				callback("started");
@@ -389,7 +407,8 @@ if(!window["viroomieListener"]) {
 		// console.log("remove html");
 		if($1(".viroomie_rejoin").length) { // in case we pressed the popup-button before...
 			temp = $0(".viroomie_rejoin");
-			temp.parentNode.removeChild(temp);
+			temp.style.display = "none";
+			// temp.parentNode.removeChild(temp);
 		}
 		if($1("#viroomieExternalWrap").length) {
 			viroomieKilled = true;
@@ -400,7 +419,8 @@ if(!window["viroomieListener"]) {
 			// 	$("html").data("viroomie",null);
 			// }
 			temp = $0("#viroomieExternalWrap");
-			temp.parentNode.removeChild(temp);
+			temp.style.display = "none";
+			// temp.parentNode.removeChild(temp);
 		}
 		if($1("body.online").length) {
 			document.body.classList.remove("online");
@@ -412,7 +432,7 @@ if(!window["viroomieListener"]) {
 	var externalChangeTrack = null;
 	var externalChangeTrackPre = null;
 	var checkUrlChange = function(){
-		console.log("checkUrlChange");
+		// console.log("checkUrlChange");
 		if(!hashRoom && !EXTERNAL.continuous) {
 			// console.log("quitting - no room saved");
 			return;
@@ -424,9 +444,25 @@ if(!window["viroomieListener"]) {
 				// console.log("pre",EXTERNAL.pre);
 				if(EXTERNAL.pre) {
 					killViroomie();
-				} else if(!EXTERNAL.pre && hashRoom) {
-					handleHashFound();
+				} else {
+					chrome.runtime.sendMessage({"a": "getRoom", "player":EXTERNAL.v}, function(response) {
+						console.log("re-get",response);
+						currentVideo = location.protocol + '//' + location.host + location.pathname + location.search;
+						hashRoom = response["room"];
+						if(response["video"] && currentVideo != response["video"]) {
+							hashRoom = "";
+							chrome.runtime.sendMessage({"a": "setRoom", "room":"", "video":"", "player":EXTERNAL.v} );
+						}
+						if(hashRoom) {
+							handleHashFound();
+						}
+					});
 				}
+				// if(EXTERNAL.pre) {
+				// 	killViroomie();
+				// } else if(!EXTERNAL.pre && hashRoom) {
+				// 	handleHashFound();
+				// }
 			}
 			externalChangeTrack = EXTERNAL.url;
 			externalChangeTrackPre = EXTERNAL.pre;
@@ -458,7 +494,7 @@ if(!window["viroomieListener"]) {
 						document.body.classList.remove("viroomie_rejoin_md");
 						button.parentNode.removeChild(button);
 						hr.parentNode.removeChild(hr);
-						chrome.runtime.sendMessage({"a": "setRoom", "room":"", "player":EXTERNAL.v});
+						chrome.runtime.sendMessage({"a": "setRoom", "room":"", "video":"", "player":EXTERNAL.v});
 					};
 					container.appendChild(hr);
 					container.appendChild(button);
@@ -471,15 +507,19 @@ if(!window["viroomieListener"]) {
 	};
 	var hashRoom = _getRoomFromHash(location.href);
 	if(hashRoom){
-		// console.log("set",hashRoom);
-		chrome.runtime.sendMessage({"a": "setRoom", "room":hashRoom, "player":EXTERNAL.v} );
+		console.log("set",hashRoom);
+		chrome.runtime.sendMessage({"a": "setRoom", "room":hashRoom, "video":"", "player":EXTERNAL.v} );
 
 		// handleHashFound();
 		checkUrlChange();
 	} else {
 		chrome.runtime.sendMessage({"a": "getRoom", "player":EXTERNAL.v}, function(response) {
-			// console.log("get",response["room"]);
+			console.log("get",response);
 			hashRoom = response["room"];
+			if(response["video"] && currentVideo != response["video"]) {
+				hashRoom = "";
+				chrome.runtime.sendMessage({"a": "setRoom", "room":"", "video":"", "player":EXTERNAL.v} );
+			}
 			if(hashRoom || EXTERNAL.continuous) {
 				// location.hash = "#room="+hashRoom;
 				// handleHashFound();
