@@ -182,7 +182,7 @@ function _getRoomFromHash(url) {
 	return false;
 }
 function init(room) {
-	console.error("init",room);
+	// console.error("init",room);
 	var info = $0('.viroomie_rejoin');
 	if(info) {
 		if(event) {
@@ -192,12 +192,12 @@ function init(room) {
 	}
 	var startViroomie = $0('#startViroomie');
 	if(!startViroomie) {
-		console.log("start bt 404");
+		// console.log("start bt 404");
 		addScript([EXTERNAL.loader+'?'+Date.now()], init.bind(null,room));
 		return;
 	}
 	startViroomie.setAttribute("data-room", room);
-	console.log("new room",startViroomie.getAttribute("data-room"));
+	// console.log("new room",startViroomie.getAttribute("data-room"));
 	triggerClick(startViroomie);
 	var video = $0(EXTERNAL.p_video);
 	if(video) {
@@ -219,7 +219,7 @@ function testForExternalJquery() {
 	}
 }
 function loadFiles() {
-	console.error("loadFiles");
+	// console.error("loadFiles");
 	if(!$0('html.viroomie-loaded')) {
 		addIncludes();
 		return;
@@ -238,9 +238,9 @@ var specialChar = {
 	}
 };
 function join(rejoin, vroom) {
-	console.error("join",rejoin, vroom);
+	// console.error("join",rejoin, vroom);
 	if($1(".viroomie_rejoin").length) { // in case we pressed the popup-button before...
-		console.log("viroomie_rejoin found - this would have ended join()");
+		// console.log("viroomie_rejoin found - this would have ended join()");
 		killViroomie();
 		// return;
 	}
@@ -302,7 +302,7 @@ function join(rejoin, vroom) {
 			// p_rejoin.style.display = "none";
 		};
 		function cancel(event) {
-			console.log("rejoin cancel");
+			// console.log("rejoin cancel");
 			// console.info("remove child", p_rejoin);
 			event.preventDefault();
 			event.stopPropagation();
@@ -317,7 +317,7 @@ function join(rejoin, vroom) {
 		p_rejoin = p_rejoin[0];
 	}
 	$0('.viroomie_join').onclick = function() {
-		console.log("rejoin join", vroom);
+		// console.log("rejoin join", vroom);
 		event.stopPropagation();
 		init(vroom);
 		p_rejoin.style.display = "none";
@@ -327,7 +327,7 @@ function join(rejoin, vroom) {
 		}
 	};
 	if(!rejoin || viroomieKilled) { //  only do this on manual join (via popup.js)
-		console.error("reload loader");
+		// console.error("reload loader");
 		viroomieKilled = false;
 		if(vroom) {
 			$0(".viroomie_join").setAttribute("data-room",vroom);
@@ -402,7 +402,7 @@ if(!window["viroomieListener"]) {
 	});
 	var viroomieKilled=false;
 	var killViroomie = function() {
-		console.error("killViroomie");
+		// console.error("killViroomie");
 		var temp;
 		// console.log("remove html");
 		if($1(".viroomie_rejoin").length) { // in case we pressed the popup-button before...
@@ -446,7 +446,7 @@ if(!window["viroomieListener"]) {
 					killViroomie();
 				} else {
 					chrome.runtime.sendMessage({"a": "getRoom", "player":EXTERNAL.v}, function(response) {
-						console.log("re-get",response);
+						// console.log("re-get",response);
 						currentVideo = location.protocol + '//' + location.host + location.pathname + location.search;
 						hashRoom = response["room"];
 						if(response["video"] && currentVideo != response["video"]) {
@@ -507,14 +507,14 @@ if(!window["viroomieListener"]) {
 	};
 	var hashRoom = _getRoomFromHash(location.href);
 	if(hashRoom){
-		console.log("set",hashRoom);
+		// console.log("set",hashRoom);
 		chrome.runtime.sendMessage({"a": "setRoom", "room":hashRoom, "video":"", "player":EXTERNAL.v} );
 
 		// handleHashFound();
 		checkUrlChange();
 	} else {
 		chrome.runtime.sendMessage({"a": "getRoom", "player":EXTERNAL.v}, function(response) {
-			console.log("get",response);
+			// console.log("get",response);
 			hashRoom = response["room"];
 			if(response["video"] && currentVideo != response["video"]) {
 				hashRoom = "";
@@ -528,4 +528,4 @@ if(!window["viroomieListener"]) {
 		});
 	}
 }
-console.info("content_script_external loaded");
+// console.info("content_script_external loaded");
