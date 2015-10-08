@@ -29,12 +29,18 @@ var msgHandler = function(request, sender, sendResponse) {
     switch(request.a) {
     case "setRoom":
       localStorage.setItem("viroomie-room-"+request.player,request.room);
+      if(typeof(request.video) === "string") {
+        localStorage.setItem("viroomie-video-"+request.player,request.video);
+      }
       // sendResponse({room: localStorage.getItem("viroomie-room-"+request.player)});
       // send msg to tab (not as a reply) to tell it that there now is a new room (only required for setRoom triggered by external AKA new room set)
-      chrome.tabs.sendMessage(sender.tab.id, {a:"newroom",room: request.room});
+      chrome.tabs.sendMessage(sender.tab.id, {a:"newroom", room: request.room});
       break;
     case "getRoom":
-      sendResponse({room: localStorage.getItem("viroomie-room-"+request.player)});
+      sendResponse({
+        room: localStorage.getItem("viroomie-room-"+request.player),
+        video: localStorage.getItem("viroomie-video-"+request.player)
+      });
       break;
     }
   }
